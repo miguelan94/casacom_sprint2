@@ -41,5 +41,5 @@
     <string name="no_mail_reset">Introduzca su E-mail o nombre de usuario</string>
     <string name="password_reseted">Contraseña reiniciada</string>
     <string name="no_entertainment_avaliable">Esta funcionalidad no funciona en Android 5.x</string>
-
+    <string name="select_BP">Seleccionar</string>
 </resources>

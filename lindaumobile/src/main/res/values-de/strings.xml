@@ -41,4 +41,5 @@
     <string name="no_mail_reset">Geben Sie Ihre E-Mail oder Benutzername</string>
     <string name="password_reseted">Passwort reset</string>
     <string name="no_entertainment_avaliable">Diese Funktionalität funktioniert nicht auf Android 5.x</string>
+    <string name="select_BP">wählen</string>
 </resources>
