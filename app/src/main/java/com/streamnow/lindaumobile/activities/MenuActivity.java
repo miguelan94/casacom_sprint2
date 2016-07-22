@@ -4,18 +4,27 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 import com.streamnow.lindaumobile.R;
 import com.streamnow.lindaumobile.datamodel.LDService;
 import com.streamnow.lindaumobile.datamodel.LDSessionUser;
@@ -73,8 +82,37 @@ public class MenuActivity extends BaseActivity
         //mainBackground.setBackgroundColor(sessionUser.userInfo.partner.colorTop);
         mainBackground.setBackgroundColor(sessionUser.userInfo.partner.backgroundColorSmartphone);
 
+
+        TextView textView = (TextView)findViewById(R.id.text_app_name);
+        if(sessionUser.userInfo.partner.smartphoneAppName!=null && sessionUser.userInfo.partner.smartphoneAppName.isEmpty()){
+            textView.setText(sessionUser.userInfo.partner.name);
+        }
+        else{
+            textView.setText(sessionUser.userInfo.partner.smartphoneAppName);
+        }
+
+
+
+
+        RelativeLayout bgnd_image = (RelativeLayout)findViewById(R.id.bgnd_image);
+        ImageView smart_image = (ImageView)findViewById(R.id.smartphone_image);
+        ImageView left_arrow = (ImageView)findViewById(R.id.left_arrow);
+        left_arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         ImageView imageView = (ImageView)findViewById(R.id.settings_ico); //icono settings
         if(!getIntent().getBooleanExtra("sub_menu",false)){
+            //smart_image.setImageResource(sessionUser.userInfo.partner.backgroundSmartphoneImage);
+
+
+            Picasso.with(this)
+                    .load(sessionUser.userInfo.partner.backgroundSmartphoneImage)
+                    //.resize()
+                    .into(smart_image);
+
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -85,12 +123,20 @@ public class MenuActivity extends BaseActivity
             });
         }
         else{
+            //imageView.setVisibility(View.GONE);@dimen/activity_vertical_margin
             imageView.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
+            smart_image.setVisibility(View.GONE);
+            //bgnd_image.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT));
+            left_arrow.setVisibility(View.VISIBLE);
+            //bgnd_image.setVisibility(View.GONE);
+            mainBackground.setPadding(0,(int)getResources().getDimension(R.dimen.activity_vertical_margin),0,0);
         }
 
-
-
         final ListView listView = (ListView) findViewById(R.id.main_menu_list_view);
+        listView.setDivider(new ColorDrawable(sessionUser.userInfo.partner.lineColorSmartphone));
+        listView.setDividerHeight(1);
+        listView.setHeaderDividersEnabled(true);
         listView.setAdapter(new MenuAdapter(this, adapterArray));
 
 
@@ -111,7 +157,6 @@ public class MenuActivity extends BaseActivity
 
         if( getIntent().getBooleanExtra("sub_menu", false) ) //si true
         {
-
 
             services = sessionUser.getAvailableServicesForCategoryId(categoryId);
             final LDService service = (LDService) services.get(position);
@@ -200,12 +245,13 @@ public class MenuActivity extends BaseActivity
         {
             services = sessionUser.getAvailableServicesForCategoryId(sessionUser.categories.get(position).id);
 
-             //System.out.println("clicked on item with title " + sessionUser.categories.get(position).name + " it has " + services.size() + " services available");
+             System.out.println("clicked on item with title " + sessionUser.categories.get(position).name + " it has " + services.size() + " services available");
 
             if (services.size() == 1)
             {
 
                 LDService service = (LDService) services.get(0);
+                System.out.println("size 1, id: " + service.id + "type: " + service.type + "name: " + service.name + "url api: " + service.apiUrl);
                     //check service type
                 if (service.type.equals("1"))
                 {
@@ -306,5 +352,11 @@ public class MenuActivity extends BaseActivity
                     public void onClick(DialogInterface dialog, int which) {}
                 })
                 .show();
+    }
+    @Override
+    public void onBackPressed() {
+        //moveTaskToBack(true);
+        finish();
+
     }
 }

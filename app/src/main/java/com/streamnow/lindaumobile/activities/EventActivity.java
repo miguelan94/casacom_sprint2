@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -35,6 +36,14 @@ public class EventActivity extends BaseActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
         progressDialog = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.please_wait), true);
+
+        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_events);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         RequestParams requestParams = new RequestParams();
         LDConnection.post("getNotifications", requestParams, new ResponseHandlerJson());
@@ -112,12 +121,12 @@ public class EventActivity extends BaseActivity implements View.OnClickListener 
     private void showPopUp(int position){
         new AlertDialog.Builder(this)
                 .setTitle(R.string.app_name)
-                .setMessage(R.string.create_date_event + events.get(position).create_date + "\n"
-                        + "\n" + R.string.date_event + events.get(position).date + "\n"
-                        + "\n" + R.string.time_event + events.get(position).time + "\n"
-                        + "\n" + R.string.title_event + events.get(position).title + "\n"
-                        + "\n" + R.string.description_event + events.get(position).description + "\n"
-                        + "\n" + R.string.place_event + events.get(position).place)
+                .setMessage(getResources().getString(R.string.create_date_event)+ ": " + events.get(position).create_date + "\n"
+                        + "\n" + getResources().getString(R.string.date_event) + ": " + events.get(position).date + "\n"
+                        + "\n" + getResources().getString(R.string.time_event) + ": " + events.get(position).time + "\n"
+                        + "\n" + getResources().getString(R.string.title_event) + ": " + events.get(position).title + "\n"
+                        + "\n" + getResources().getString(R.string.description_event) + ": " + events.get(position).description + "\n"
+                        + "\n" + getResources().getString(R.string.place_event) + ": " + events.get(position).place)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int which) {}

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -52,7 +53,13 @@ public class DocmanMenuActivity extends BaseActivity
 
         RelativeLayout mainBackground = (RelativeLayout) findViewById(R.id.main_background);
         mainBackground.setBackgroundColor(sessionUser.userInfo.partner.backgroundColorSmartphone);
-
+        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_doc);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         this.isRootMenu = getIntent().getBooleanExtra("root_menu", false);
 
         if( this.isRootMenu )

@@ -14,24 +14,33 @@
     tools:showIn="@layout/activity_login"
     android:id="@+id/login_background">
 
-    <ImageView
-        android:id="@+id/main_logo"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/main_logo"
-        android:layout_gravity="center"
-        android:layout_marginLeft="58dp"
-        android:layout_marginRight="65dp"
-        android:layout_marginTop="20dp"
-        android:layout_weight="0.2"
-        android:adjustViewBounds="false" />
+        android:layout_height="80dp"
+        android:layout_weight="0.4"
+        android:id="@+id/layout_main_logo">
+
+        <ImageView
+            android:id="@+id/main_logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/main_logo"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_weight="0.5" >
+        android:layout_weight="0.4" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -80,6 +89,20 @@
                 android:layout_weight="6"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|right"
+            android:layout_marginTop="10dp">
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/switch_loggged"
+                android:text="@string/switch_loggued"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 
@@ -97,8 +120,7 @@
             android:text="@string/login_button_title1"
             android:textColor="#fff"
             android:textSize="16dp"
-            android:background="@drawable/login_button_states"
-            android:layout_weight="0.01" />
+            android:background="@drawable/login_button_states" />
 
         <Button
             android:id="@+id/resetButton"

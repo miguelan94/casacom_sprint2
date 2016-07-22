@@ -32,7 +32,7 @@ public class DMDocument extends DMElement implements IMenuPrintable
             if(!o.isNull("id")) this.id = o.getString("id");
             if(!o.isNull("name")) this.name = o.getString("name");
             if(!o.isNull("description")) this.description = o.getString("description");
-            if(!o.isNull("last_update")) this.lastUpdate = o.getString("lastUpdate");
+            if(!o.isNull("last_update")) this.lastUpdate = o.getString("last_update");
             if(!o.isNull("issuer")) this.issuer = o.getString("issuer");
             if(!o.isNull("link")) this.link = o.getString("link");
         }

@@ -69,6 +69,14 @@ public class ContactActivity extends BaseActivity
             }
         });
 
+        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_contact);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         this.avatarImageView = (ImageView) findViewById(R.id.contact_avatar);
         this.phoneTextView = (TextView) findViewById(R.id.contact_phone);
         this.emailTextView = (TextView) findViewById(R.id.contact_email);

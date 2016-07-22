@@ -31,6 +31,15 @@
             android:maxWidth="42dp"
             android:maxHeight="42dp"
             android:scaleType="fitCenter"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/left_arrow"
+            android:id="@+id/image_left_arrow"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="14dp"
+            android:padding="6dp" />
     </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

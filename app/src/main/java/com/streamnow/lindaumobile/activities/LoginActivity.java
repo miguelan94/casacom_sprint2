@@ -1,10 +1,12 @@
 package com.streamnow.lindaumobile.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -12,20 +14,27 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 import com.streamnow.lindaumobile.R;
 import com.streamnow.lindaumobile.datamodel.LDSessionUser;
 import com.streamnow.lindaumobile.lib.LDConnection;
@@ -36,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Locale;
+import java.util.zip.Inflater;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -49,36 +59,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
     private Button resetButton;
     private EditText userEditText;
     private EditText passwdEditText;
+    private ImageView main_logo;
+    private Switch switch_logged;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-         //Locale defaultLocale  = new Locale(Locale.getDefault().getDisplayLanguage());
-       // Configuration config = new Configuration();
-       // config.
-        //config.locale = defaultLocale;
-       // getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
-
-
-            //Locale defaultLocale = new Locale( getResources().getConfiguration().locale.getDisplayLanguage());
-            //Configuration config = new Configuration();
-            //config.locale = defaultLocale;
-            //getBaseContext().getApplicationContext().getResources().updateConfiguration(config,null);
-
-
-        Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        /////lindaufiber---->login activity
+       // Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
+        //Configuration config = new Configuration();
+        //config.locale = locale;
+        //getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
         setContentView(R.layout.activity_login);
         LinearLayout background = (LinearLayout)findViewById(R.id.login_background);
-        ImageView main_logo = (ImageView)findViewById(R.id.main_logo);
+        main_logo = (ImageView)findViewById(R.id.main_logo);
         loginButton = (Button) this.findViewById(R.id.loginButton);
         resetButton = (Button)findViewById(R.id.resetButton);
+        switch_logged = (Switch)findViewById(R.id.switch_loggged);
 
         if(getIntent().getStringExtra("BP")!=null){
             if(getIntent().getStringExtra("BP").equals("Limmat")){
@@ -91,9 +92,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
             }
             else if(getIntent().getStringExtra("BP").equals("SBB")){
                 Lindau.getInstance().appId = "com.streamnow.sbbmobile";
-                //background.setBackgroundColor(Color.rgb(255,255,255));
                 main_logo.setImageResource(R.drawable.sbb_logo);
-                main_logo.setAdjustViewBounds(true);
+               // main_logo.setAdjustViewBounds(true);
                 loginButton.setBackgroundColor(Color.rgb(197,1,44));
                 resetButton.setBackgroundColor(Color.rgb(197,1,44));
                 Lindau.getInstance().appDemoAccount = "demo.sbb";
@@ -115,16 +115,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
             }
             else if(getIntent().getStringExtra("BP").equals("CS")){
                 Lindau.getInstance().appId = "com.streamnow.csmobile";
-                System.out.println("CS");
                 background.setBackgroundColor(Color.rgb(255,255,255));
                 main_logo.setImageResource(R.drawable.credit_suisse_logo);
                 loginButton.setBackgroundColor(Color.rgb(0,50,83));
                 resetButton.setBackgroundColor(Color.rgb(0,50,83));
                 Lindau.getInstance().appDemoAccount = "democs";
             }
+            else if(getIntent().getStringExtra("BP").equals("Lindau2")){
+                Lindau.getInstance().appId ="com.streamnow.lindaumobile2";
+                Lindau.getInstance().appDemoAccount = "demo.lindau";
+            }
         }else{
-            Lindau.getInstance().appId ="com.streamnow.lindaumobile";
-            Lindau.getInstance().appDemoAccount = "demo.lindau";
+                Lindau.getInstance().appId ="com.streamnow.lindaumobile";
+                Lindau.getInstance().appDemoAccount = "demo.lindau";
         }
 
 
@@ -136,6 +139,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         loginButton.setTag(LOGIN_BUTTON_TAG);
         resetButton.setOnClickListener(this);
         resetButton.setTag(RESET_BUTTON_TAG);
+
 
         TextWatcher textWatcher = new TextWatcher()
         {
@@ -349,7 +353,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response)
             {
-
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                SharedPreferences.Editor prefEditor = sharedPref.edit();
+                if(switch_logged.isChecked()){
+                    prefEditor.putString("session_user", response.toString());
+                    prefEditor.putBoolean("keepSession",true);
+                    prefEditor.putString("AppId",Lindau.getInstance().appId);
+                    System.out.println("AppId stored " + Lindau.getInstance().appId);
+                    prefEditor.apply();
+                }else{
+                    prefEditor.putBoolean("keepSession",false);
+                    prefEditor.apply();
+                }
                 LDSessionUser sessionUser;
 
                 try
@@ -361,7 +376,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                     sessionUser = null;
                     e.printStackTrace();
                 }
-
                 progressDialog.dismiss();
 
                 if( sessionUser != null && sessionUser.accessToken != null )
@@ -410,6 +424,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
     private void showAlertDialogReset(int msg)
     {
+        System.out.println("Dimensions------> " + main_logo.getWidth() + " " + main_logo.getHeight());
         final EditText inputEmail = new EditText(this);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.app_name)

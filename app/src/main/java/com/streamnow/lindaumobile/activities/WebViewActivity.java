@@ -63,6 +63,14 @@ public class WebViewActivity extends BaseActivity
 
         View backView = findViewById(R.id.view_bgnd);
         ImageView imageView = (ImageView) findViewById(R.id.bgnd_image);
+        ImageView leftArrow = (ImageView)findViewById(R.id.image_left_arrow);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         this.webView = (WebView)findViewById(R.id.webView);
 
         if( serviceId != null && (serviceId.equals("29") || serviceId.equals("57")) )

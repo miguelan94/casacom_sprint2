@@ -19,6 +19,15 @@ public class ProfileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_profile);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         View backView = findViewById(R.id.profile_view_bgnd);
         backView.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.backgroundColorSmartphone);
         TextView profile_title = (TextView)findViewById(R.id.profile_title);

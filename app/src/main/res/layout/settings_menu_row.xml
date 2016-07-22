@@ -3,7 +3,6 @@
     android:layout_width="fill_parent"
     android:layout_height="82dp"
     android:padding="10dip"
-
     >
 
     <LinearLayout
@@ -11,19 +10,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:background="#000"
-        >
+        android:background="#000">
 
-        <ImageView
-            android:id="@+id/row_settings_icon"
-            android:layout_width="100dp"
-            android:layout_height="fill_parent"
-            android:padding="4dp"
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/layout_bgnd"
             android:layout_weight="1"
-            android:layout_marginLeft="8dp"
-            android:src="@drawable/ic_action_name"
-            />
+            android:layout_marginLeft="8dp">
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/bgnd_circle_settings"
+                android:layout_gravity="center" />
+
+            <ImageView
+                android:id="@+id/row_settings_icon"
+                android:layout_width="100dp"
+                android:layout_height="fill_parent"
+                android:padding="4dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_action_name"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
         <TextView
             android:id="@+id/row_settings_text"
             android:layout_width="fill_parent"

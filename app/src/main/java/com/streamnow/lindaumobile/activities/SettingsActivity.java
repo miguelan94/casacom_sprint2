@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -23,6 +27,7 @@ import com.streamnow.lindaumobile.lib.LDConnection;
 import com.streamnow.lindaumobile.utils.Lindau;
 import com.streamnow.lindaumobile.utils.SettingsAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +58,8 @@ public class SettingsActivity extends Activity {
         }
 
         ListView listView = (ListView)findViewById(R.id.settings_menu_list_view);
+        listView.setDivider(new ColorDrawable(sessionUser.userInfo.partner.lineColorSmartphone));
+        listView.setDividerHeight(1);
         listView.setAdapter(new SettingsAdapter(this,items));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -63,6 +70,32 @@ public class SettingsActivity extends Activity {
                 menuItemClicked(position);
             }
         });
+        ImageView left_arrow = (ImageView)findViewById(R.id.left_arrow_settings);
+        left_arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+       /* SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String sessionUser = preferences.getString("session_user","");
+        if(!sessionUser.equalsIgnoreCase("")){
+            System.out.println("Keep loogued: " + preferences.getBoolean("keepSession",false));
+            System.out.println("Session stored, string: " + sessionUser);
+            try {
+                JSONObject json = new JSONObject(sessionUser);
+                System.out.println(" json: " + json.getJSONArray("categories"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }*/
+
+
+
     }
 
     private void menuItemClicked(int position){
@@ -78,14 +111,19 @@ public class SettingsActivity extends Activity {
         }else if(position==2){//logout
 
             RequestParams requestParams = new RequestParams();
-            LDConnection.get("logout", requestParams, new JsonHttpResponseHandler()
+            System.out.println("URL: " + LDConnection.getAbsoluteUrl("logout"));
+            LDConnection.get("auth/logout", requestParams, new JsonHttpResponseHandler()
             {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response)
                 {
                     try{
                         if(response.getString("msg").equals("Logout OK")){
-                            Intent i = new Intent(SettingsActivity.this,LoginActivity.class);
+                            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
+                            SharedPreferences.Editor prefEditor = sharedPref.edit();
+                            prefEditor.putBoolean("keepSession",false);
+                            prefEditor.apply();
+                            Intent i = new Intent(SettingsActivity.this,MainActivity.class);
                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(i);
 

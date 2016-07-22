@@ -25,6 +25,7 @@ public class LDSessionUser
     {
         try
         {
+            //System.out.println("JSON------" + o.toString());
             if(!o.isNull("categories")) this.categories = LDCategory.categoriesFromArray(o.getJSONArray("categories"));
             if(!o.isNull("available_languages")) this.availableLanguages = LDLanguage.languagesFromArray(o.getJSONArray("available_languages"));
             if(!o.isNull("deviceSessionId")) this.deviceSessionId = o.getString("deviceSessionId");

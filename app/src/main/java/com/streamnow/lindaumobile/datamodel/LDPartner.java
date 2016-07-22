@@ -24,13 +24,18 @@ public class LDPartner
     public String email;
     public String name;
     public String backgroundImage;
+    public String backgroundSmartphoneImage;
     public int backgroundColorSmartphone;
+    public int backgroundColorIconSmartphone;
+    public int lineColorSmartphone;
+    public String smartphoneAppName;
 
     public LDPartner(JSONObject o)
     {
         Lindau ld = Lindau.getInstance();
         try
         {
+            System.out.println("Name parent: " + o.getString("name"));
             if(!o.isNull("font_color_top")) this.fontColorTop = ld.colorFromRGBAString(o.getString("font_color_top"));
             if(!o.isNull("font_color_service")) this.fontColorService = ld.colorFromRGBAString(o.getString("font_color_service"));
             if(!o.isNull("font_color_bottom")) this.fontColorBottom = ld.colorFromRGBAString(o.getString("font_color_bottom"));
@@ -52,6 +57,10 @@ public class LDPartner
             if(!o.isNull("email")) this.email = o.getString("email");
             if(!o.isNull("name")) this.name = o.getString("name");
             if(!o.isNull("background_image")) this.backgroundImage = o.getString("background_image");
+            if(!o.isNull("background_color_icon_smartphone")) this.backgroundColorIconSmartphone = ld.colorFromRGBAString(o.getString("background_color_icon_smartphone"));
+            if(!o.isNull("line_color_smartphone"))this.lineColorSmartphone = ld.colorFromRGBAString(o.getString("line_color_smartphone"));
+            if(!o.isNull("background_smartphone_image"))this.backgroundSmartphoneImage = o.getString("background_smartphone_image");
+            if(!o.isNull("smartphone_app_name")) this.smartphoneAppName = o.getString("smartphone_app_name");
         }
         catch (Exception e)
         {
