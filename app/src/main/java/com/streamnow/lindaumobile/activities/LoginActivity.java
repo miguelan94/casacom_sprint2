@@ -1,5 +1,6 @@
 package com.streamnow.lindaumobile.activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -7,16 +8,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,7 +51,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.zip.Inflater;
 
 import cz.msebera.android.httpclient.Header;
@@ -63,6 +75,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
     private Switch switch_logged;
 
 
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -80,14 +94,33 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         loginButton = (Button) this.findViewById(R.id.loginButton);
         resetButton = (Button)findViewById(R.id.resetButton);
         switch_logged = (Switch)findViewById(R.id.switch_loggged);
+        switch_logged.getThumbDrawable().setColorFilter(getResources().getColor(R.color.switchLogged), PorterDuff.Mode.MULTIPLY);
+        switch_logged.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    switch_logged.getThumbDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+
+                }else{
+                    switch_logged.getThumbDrawable().setColorFilter(getResources().getColor(R.color.switchLogged) , PorterDuff.Mode.MULTIPLY);
+                }
+            }
+        });
+        //switch_logged.setButtonTintList(buttonStates);
+        //switch_logged.getThumbDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+        //switch_logged.getTrackDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+
 
         if(getIntent().getStringExtra("BP")!=null){
             if(getIntent().getStringExtra("BP").equals("Limmat")){
                 Lindau.getInstance().appId = "com.streamnow.limmatmobile";
                 System.out.println("Limmat");
                 main_logo.setImageResource(R.drawable.limmat_logo);
-                loginButton.setBackgroundColor(Color.rgb(215,10,23));
-                resetButton.setBackgroundColor(Color.rgb(215,10,23));
+
+                String rgba = getIntent().getStringExtra("ColorBP");
+                System.out.println("Color: " + colorFromRGBAString(rgba));
+                //loginButton.setBackgroundColor(getResources().getColor(Lindau.getInstance().colorFromRGBAString(getIntent().getStringExtra("ColorBP"))));
+                //resetButton.setBackgroundColor(getResources().getColor(Lindau.getInstance().colorFromRGBAString(getIntent().getStringExtra("ColorBP"))));
                 Lindau.getInstance().appDemoAccount = "demo.limmat";
             }
             else if(getIntent().getStringExtra("BP").equals("SBB")){
@@ -330,7 +363,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
     private void continueLogin()
     {
-        String username, password;
+        final String username, password;
 
         if( userEditText.getText().toString().isEmpty()  && passwdEditText.getText().toString().isEmpty() )
         {
@@ -355,16 +388,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
             {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                 SharedPreferences.Editor prefEditor = sharedPref.edit();
-                if(switch_logged.isChecked()){
-                    prefEditor.putString("session_user", response.toString());
-                    prefEditor.putBoolean("keepSession",true);
-                    prefEditor.putString("AppId",Lindau.getInstance().appId);
-                    System.out.println("AppId stored " + Lindau.getInstance().appId);
-                    prefEditor.apply();
-                }else{
-                    prefEditor.putBoolean("keepSession",false);
-                    prefEditor.apply();
-                }
                 LDSessionUser sessionUser;
 
                 try
@@ -386,6 +409,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                     Configuration config = new Configuration();
                     config.locale = locale;
                     getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+
+                    if(switch_logged.isChecked()){
+                        prefEditor.putString("valid_until",sessionUser.validUntil);
+                        prefEditor.putString("session_user", response.toString());
+                        prefEditor.putString("access_token",sessionUser.accessToken);
+                        prefEditor.putString("refresh_token",sessionUser.refreshToken);
+                        prefEditor.putBoolean("keepSession",true);
+                        prefEditor.putString("AppId",Lindau.getInstance().appId);
+                        prefEditor.putString("user",username);
+                        prefEditor.putString("pass",password);
+                        prefEditor.apply();
+                    }else{
+                        prefEditor.putBoolean("keepSession",false);
+                        prefEditor.apply();
+                    }
 
                     Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                     startActivity(intent);
@@ -472,6 +510,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                 })
                 .setIcon(R.mipmap.ic_launcher)
                 .show();
+    }
+    private int colorFromRGBAString(String rgbaString)
+    {
+        String[] colors = rgbaString.substring(5, rgbaString.length() - 1 ).split(",");
+        int r = Integer.parseInt(colors[0].trim());
+        int g = Integer.parseInt(colors[1].trim());
+        int b = Integer.parseInt(colors[2].trim());
+        int a = Integer.parseInt(colors[3].trim()) * 255;
+
+        return (r << 16) | (g << 8) | (b) | (a << 24);
     }
 }
 

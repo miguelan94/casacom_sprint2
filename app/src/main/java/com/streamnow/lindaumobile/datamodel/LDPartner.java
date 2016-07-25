@@ -35,32 +35,29 @@ public class LDPartner
         Lindau ld = Lindau.getInstance();
         try
         {
-            System.out.println("Name parent: " + o.getString("name"));
-            if(!o.isNull("font_color_top")) this.fontColorTop = ld.colorFromRGBAString(o.getString("font_color_top"));
-            if(!o.isNull("font_color_service")) this.fontColorService = ld.colorFromRGBAString(o.getString("font_color_service"));
-            if(!o.isNull("font_color_bottom")) this.fontColorBottom = ld.colorFromRGBAString(o.getString("font_color_bottom"));
+            if(!o.isNull("font_color_top") && !o.getString("font_color_top").equals("")) this.fontColorTop = ld.colorFromRGBAString(o.getString("font_color_top"));
+            if(!o.isNull("font_color_service") && !o.getString("font_color_service").equals("") ) this.fontColorService = ld.colorFromRGBAString(o.getString("font_color_service"));
+            if(!o.isNull("font_color_bottom") && !o.getString("font_color_bottom").equals("")) this.fontColorBottom = ld.colorFromRGBAString(o.getString("font_color_bottom"));
             if(!o.isNull("phone")) this.phone = o.getString("phone");
             if(!o.isNull("support_button")) this.supportButton = o.getBoolean("support_button");
             if(!o.isNull("footer_content")) this.footerContent = o.getString("footer_content");
-            if(!o.isNull("color_service")) this.colorService = ld.colorFromRGBAString(o.getString("color_service"));
-            //this.colorService = ld.colorFromRGBAString("rgba(255,255,255,1)");
+            if(!o.isNull("color_service") && !o.getString("color_service").equals("")) this.colorService = ld.colorFromRGBAString(o.getString("color_service"));
             if(!o.isNull("url")) this.url = o.getString("url");
             if(!o.isNull("company")) this.company = o.getString("company");
-            if(!o.isNull("font_color_smartphone")) this.fontColorSmartphone = ld.colorFromRGBAString(o.getString("font_color_smartphone"));
-            //this.fontColorSmartphone = ld.colorFromRGBAString("rgba(0,0,0,1)");
+            if(!o.isNull("font_color_smartphone") && !o.getString("font_color_smartphone").equals("")) this.fontColorSmartphone = ld.colorFromRGBAString(o.getString("font_color_smartphone"));
             if(!o.isNull("logo")) this.logo = o.getString("logo");
-            if(!o.isNull("background_color_smartphone")) this.backgroundColorSmartphone = ld.colorFromRGBAString(o.getString("background_color_smartphone"));
-            //this.backgroundColorSmartphone = ld.colorFromRGBAString("rgba(29,153,29,1)");
-            if(!o.isNull("color_top")) this.colorTop = ld.colorFromRGBAString(o.getString("color_top"));
+            if(!o.isNull("background_color_smartphone") && !o.getString("background_color_smartphone").equals("")) this.backgroundColorSmartphone = ld.colorFromRGBAString(o.getString("background_color_smartphone"));
+            if(!o.isNull("color_top") && !o.getString("color_top").equals("")) this.colorTop = ld.colorFromRGBAString(o.getString("color_top"));
             if(!o.isNull("footer_active")) this.footerActive = o.getBoolean("footer_active");
             if(!o.isNull("paid_services")) this.paidServices = o.getBoolean("paid_services");
             if(!o.isNull("email")) this.email = o.getString("email");
             if(!o.isNull("name")) this.name = o.getString("name");
             if(!o.isNull("background_image")) this.backgroundImage = o.getString("background_image");
-            if(!o.isNull("background_color_icon_smartphone")) this.backgroundColorIconSmartphone = ld.colorFromRGBAString(o.getString("background_color_icon_smartphone"));
-            if(!o.isNull("line_color_smartphone"))this.lineColorSmartphone = ld.colorFromRGBAString(o.getString("line_color_smartphone"));
-            if(!o.isNull("background_smartphone_image"))this.backgroundSmartphoneImage = o.getString("background_smartphone_image");
+            if(!o.isNull("background_color_icon_smartphone") && !o.getString("background_color_icon_smartphone").equals("")) this.backgroundColorIconSmartphone = ld.colorFromRGBAString(o.getString("background_color_icon_smartphone"));
+            if(!o.isNull("line_color_smartphone") && !o.getString("line_color_smartphone").equals(""))this.lineColorSmartphone = ld.colorFromRGBAString(o.getString("line_color_smartphone"));
+            if(!o.isNull("background_smartphone_image")) this.backgroundSmartphoneImage = o.getString("background_smartphone_image");
             if(!o.isNull("smartphone_app_name")) this.smartphoneAppName = o.getString("smartphone_app_name");
+
         }
         catch (Exception e)
         {

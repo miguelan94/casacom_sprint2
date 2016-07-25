@@ -37,8 +37,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.prefs.Preferences;
 
 import cz.msebera.android.httpclient.Header;
@@ -108,6 +114,7 @@ public class MenuActivity extends BaseActivity
         if(!getIntent().getBooleanExtra("sub_menu",false)){
             //smart_image.setImageResource(sessionUser.userInfo.partner.backgroundSmartphoneImage);
 
+            System.out.println("Image: " + sessionUser.userInfo.partner.backgroundSmartphoneImage);
             dividerTop.setVisibility(View.GONE);
             Picasso.with(this)
                     .load(sessionUser.userInfo.partner.backgroundSmartphoneImage)

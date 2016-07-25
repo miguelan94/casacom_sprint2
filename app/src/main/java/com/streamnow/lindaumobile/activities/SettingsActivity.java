@@ -54,7 +54,9 @@ public class SettingsActivity extends BaseActivity {
         if(getIntent().getBooleanExtra("main_menu",true)){
             this.items = new ArrayList<>();
             String [] list = {getResources().getString(R.string.profile),getResources().getString(R.string.contacts),getResources().getString(R.string.logout),getResources().getString(R.string.shopping)};
-            items.addAll(Arrays.asList(list));
+            //items.addAll(Arrays.asList(list)); //all
+            items.add(0,list[0]);
+            items.add(1,list[2]);
         }
         View dividerTop = findViewById(R.id.divider);
         dividerTop.setBackgroundColor(sessionUser.userInfo.partner.lineColorSmartphone);
@@ -104,16 +106,10 @@ public class SettingsActivity extends BaseActivity {
             Intent i = new Intent(this,ProfileActivity.class);
             startActivity(i);
 
-        }else if(position==1){//contacts
-
-            Intent intent= new Intent(Intent.ACTION_PICK,  ContactsContract.Contacts.CONTENT_URI);
-            intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-            startActivityForResult(intent,PICK_CONTACT_REQUEST);
-        }else if(position==2){//logout
+        }else if(position==1){//logout
 
             RequestParams requestParams = new RequestParams();
             //requestParams.add("access_token",sessionUser.accessToken);
-            requestParams.add("source", "Mobile");
             System.out.println("URL: " + LDConnection.getAbsoluteUrl("logout"));
             LDConnection.get("logout", requestParams, new JsonHttpResponseHandler()
             {
@@ -149,6 +145,11 @@ public class SettingsActivity extends BaseActivity {
                 }
             });
 
+        }else if(position==2){//contacts
+
+            Intent intent= new Intent(Intent.ACTION_PICK,  ContactsContract.Contacts.CONTENT_URI);
+            intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+            startActivityForResult(intent,PICK_CONTACT_REQUEST);
         }else if(position==3){//shopping
             //Intent i = new Intent(this,MainActivity.class);
             //startActivity(i);
