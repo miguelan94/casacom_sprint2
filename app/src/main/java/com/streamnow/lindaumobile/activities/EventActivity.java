@@ -19,6 +19,7 @@ import com.loopj.android.http.RequestParams;
 import com.streamnow.lindaumobile.R;
 import com.streamnow.lindaumobile.datamodel.LDEvents;
 import com.streamnow.lindaumobile.lib.LDConnection;
+import com.streamnow.lindaumobile.utils.Lindau;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +47,7 @@ public class EventActivity extends BaseActivity implements View.OnClickListener 
         });
 
         RequestParams requestParams = new RequestParams();
+        requestParams.add("access_token", Lindau.getInstance().getCurrentSessionUser().accessToken);
         LDConnection.post("getNotifications", requestParams, new ResponseHandlerJson());
     }
 
@@ -162,7 +164,7 @@ public class EventActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse)
         {
-            System.out.println("getEvent onFailure json");
+            System.out.println("getEvent onFailure json" + errorResponse.toString());
             progressDialog.dismiss();
         }
     }

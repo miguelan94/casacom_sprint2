@@ -103,14 +103,14 @@ public class MenuActivity extends BaseActivity
                 finish();
             }
         });
-        ImageView imageView = (ImageView)findViewById(R.id.settings_ico); //icono settings
+        View dividerTop = findViewById(R.id.divider);
+        ImageView imageView = (ImageView)findViewById(R.id.settings_ico); //settings
         if(!getIntent().getBooleanExtra("sub_menu",false)){
             //smart_image.setImageResource(sessionUser.userInfo.partner.backgroundSmartphoneImage);
 
-
+            dividerTop.setVisibility(View.GONE);
             Picasso.with(this)
                     .load(sessionUser.userInfo.partner.backgroundSmartphoneImage)
-                    //.resize()
                     .into(smart_image);
 
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +123,8 @@ public class MenuActivity extends BaseActivity
             });
         }
         else{
-            //imageView.setVisibility(View.GONE);@dimen/activity_vertical_margin
+            dividerTop.setBackgroundColor(sessionUser.userInfo.partner.lineColorSmartphone);
+            dividerTop.setVisibility(View.VISIBLE);
             imageView.setVisibility(View.GONE);
             textView.setVisibility(View.GONE);
             smart_image.setVisibility(View.GONE);
@@ -136,7 +137,6 @@ public class MenuActivity extends BaseActivity
         final ListView listView = (ListView) findViewById(R.id.main_menu_list_view);
         listView.setDivider(new ColorDrawable(sessionUser.userInfo.partner.lineColorSmartphone));
         listView.setDividerHeight(1);
-        listView.setHeaderDividersEnabled(true);
         listView.setAdapter(new MenuAdapter(this, adapterArray));
 
 
@@ -160,7 +160,7 @@ public class MenuActivity extends BaseActivity
 
             services = sessionUser.getAvailableServicesForCategoryId(categoryId);
             final LDService service = (LDService) services.get(position);
-
+            System.out.println("service clicked-----" + service.name + "id " + service.id + " category " + service.categoryId);
             if (service.type.equals("2"))
             {
                 final Intent intent = new Intent(this, WebViewActivity.class);
@@ -196,7 +196,6 @@ public class MenuActivity extends BaseActivity
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response)
                         {
-                            System.out.println("success json" + response.toString());
                             try{
                                 intent.putExtra("token",response.getString("token") );
                                 startActivity(intent);
@@ -208,7 +207,7 @@ public class MenuActivity extends BaseActivity
 
                         @Override
                         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            System.out.println("onFailure json");
+                            System.out.println("onFailure json" + errorResponse.toString());
                         }
 
                         @Override
@@ -238,6 +237,18 @@ public class MenuActivity extends BaseActivity
                     Intent i = new Intent(this,EventActivity.class);
                     startActivity(i);
 
+                }
+                else if( service.id.equals("53") || service.id.equals("20") )
+                {
+                    Intent intent = new Intent(this, ContactActivity.class);
+                    startActivity(intent);
+                }
+                else if(service.id.equals("3"))
+                {
+                    Intent intent = new Intent(this, DocmanMenuActivity.class);
+                    intent.putExtra("root_menu", true);
+                    intent.putExtras( new Bundle());
+                    startActivity(intent);
                 }
             }
         }
@@ -288,7 +299,7 @@ public class MenuActivity extends BaseActivity
                 intent.putExtra("category_id", sessionUser.categories.get(position).id);
                 intent.putExtra("sub_menu", true);
                 if(sessionUser.categories.get(position).id.equals("5")){//entertainment
-
+                    System.out.println("access token: " + sessionUser.accessToken);
                     if(Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP || Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1){ //API 21-22
                         showAlertDialog(getResources().getString(R.string.no_entertainment_avaliable));
                     }
@@ -318,7 +329,7 @@ public class MenuActivity extends BaseActivity
 
                             @Override
                             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                System.out.println("onFailure json");
+                                System.out.println("onFailure json" +errorResponse.toString());
                             }
 
                             @Override

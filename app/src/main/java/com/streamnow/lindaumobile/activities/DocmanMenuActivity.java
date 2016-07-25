@@ -236,7 +236,7 @@ public class DocmanMenuActivity extends BaseActivity
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse)
         {
             showAlertDialog(getString(R.string.network_error));
-            System.out.println("getContact onFailure json");
+            System.out.println("getContact onFailure json" + errorResponse.toString());
             progressDialog.dismiss();
         }
     }

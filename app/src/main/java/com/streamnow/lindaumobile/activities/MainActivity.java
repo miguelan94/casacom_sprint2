@@ -39,7 +39,7 @@ import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
-public class MainActivity extends Activity implements View.OnClickListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private String[] arrayString = null;
     private SharedPreferences preferences;
@@ -188,7 +188,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void continueCheckLogin(){
         System.out.println("continue check login");
+        System.out.println("URL " + LDConnection.getAbsoluteUrl("logout"));
         String session = preferences.getString("session_user","");
+        System.out.println("Session user: " + session);
         if(!session.equalsIgnoreCase("")){
             LDSessionUser LDsessionUser;
             try {
@@ -202,6 +204,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
             if( LDsessionUser != null && LDsessionUser.accessToken != null )
             {
+                System.out.println("Not null");
                 Lindau.getInstance().setCurrentSessionUser(LDsessionUser);
                 Locale locale = new Locale(LDsessionUser.userInfo.language);
                 //Locale.setDefault(locale);
@@ -213,6 +216,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
+            }
+            else{
+                System.out.println("Null");
             }
         }
     }

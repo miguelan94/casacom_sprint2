@@ -107,6 +107,7 @@ public class CheckLoginActivity extends BaseActivity {
 
     private void continueCheckLogin(){
         System.out.println("continue check login");
+
         String session = preferences.getString("session_user","");
         if(!session.equalsIgnoreCase("")){
             LDSessionUser LDsessionUser;

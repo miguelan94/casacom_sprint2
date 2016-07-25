@@ -37,7 +37,7 @@ import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends BaseActivity {
 
     protected final LDSessionUser sessionUser = Lindau.getInstance().getCurrentSessionUser();
     protected ArrayList<String> items;
@@ -56,7 +56,8 @@ public class SettingsActivity extends Activity {
             String [] list = {getResources().getString(R.string.profile),getResources().getString(R.string.contacts),getResources().getString(R.string.logout),getResources().getString(R.string.shopping)};
             items.addAll(Arrays.asList(list));
         }
-
+        View dividerTop = findViewById(R.id.divider);
+        dividerTop.setBackgroundColor(sessionUser.userInfo.partner.lineColorSmartphone);
         ListView listView = (ListView)findViewById(R.id.settings_menu_list_view);
         listView.setDivider(new ColorDrawable(sessionUser.userInfo.partner.lineColorSmartphone));
         listView.setDividerHeight(1);
@@ -111,8 +112,10 @@ public class SettingsActivity extends Activity {
         }else if(position==2){//logout
 
             RequestParams requestParams = new RequestParams();
+            //requestParams.add("access_token",sessionUser.accessToken);
+            requestParams.add("source", "Mobile");
             System.out.println("URL: " + LDConnection.getAbsoluteUrl("logout"));
-            LDConnection.get("auth/logout", requestParams, new JsonHttpResponseHandler()
+            LDConnection.get("logout", requestParams, new JsonHttpResponseHandler()
             {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response)
@@ -146,11 +149,11 @@ public class SettingsActivity extends Activity {
                 }
             });
 
-        }else if(position==3){
-            Intent i = new Intent(this,MainActivity.class);
-            startActivity(i);
+        }else if(position==3){//shopping
+            //Intent i = new Intent(this,MainActivity.class);
+            //startActivity(i);
 
-        }//shopping
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode,Intent data){

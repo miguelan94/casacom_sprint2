@@ -28,7 +28,11 @@
             android:layout_marginBottom="6dp"
             android:layout_marginLeft="8dp" />
     </LinearLayout>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/layout_arrow"
+        android:id="@+id/divider" />
     <ListView
         android:id="@+id/settings_menu_list_view"
         android:layout_width="match_parent"

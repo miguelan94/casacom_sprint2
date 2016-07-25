@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
-            android:id="@+id/contact_bgnd_image"
+            android:id="@+id/profile_bgnd_image"
             android:layout_width="match_parent"
             android:layout_height="66dp"
             android:src="@drawable/navbar_bgnd"/>
