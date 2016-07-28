@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -38,7 +39,12 @@ public class EventActivity extends BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_event);
         progressDialog = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.please_wait), true);
 
-        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_events);
+        //View view_bgnd = findViewById(R.id.view_bgnd_event);
+        LinearLayout bgnd = (LinearLayout)findViewById(R.id.bar_bgnd);
+        bgnd.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorTop);
+        ImageView bgnd_image = (ImageView)findViewById(R.id.event_bgnd_image);
+        bgnd_image.setColorFilter(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorTop, PorterDuff.Mode.SRC_ATOP);
+        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_event);
         leftArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

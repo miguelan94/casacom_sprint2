@@ -2,6 +2,9 @@ package com.streamnow.lindaumobile.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -68,9 +71,10 @@ public class DocMenuAdapter extends BaseAdapter
         TextView textView = (TextView) convertView.findViewById(R.id.row_text);
         textView.setTextColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.fontColorSmartphone);
         textView.setText(dmElement.getRowTitleText());
-
+        ImageView bgnd_circle = (ImageView)convertView.findViewById(R.id.bgnd_circle);
         if( dmElement.getIconUrlString() == null )
         {
+            createBitMap(bgnd_circle);
             if( dmElement.getRowTitleText().equals(context.getString(R.string.general_docs)) )
             {
                 imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.general_docs_icon));
@@ -89,5 +93,21 @@ public class DocMenuAdapter extends BaseAdapter
         }
 
         return convertView;
+    }
+    private void createBitMap(ImageView bgnd) {
+
+        Bitmap bitMap = Bitmap.createBitmap(150, 150, Bitmap.Config.ARGB_8888);
+        bitMap = bitMap.copy(bitMap.getConfig(), true);
+        Canvas canvas = new Canvas(bitMap);
+
+        Paint paint = new Paint();
+        paint.setColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.backgroundColorIconSmartphone);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        //paint.setStrokeWidth(0.5f);
+        paint.setAntiAlias(true);
+        bgnd.setImageBitmap(bitMap);
+        canvas.drawCircle(75,75,55,paint);
+
+        bgnd.invalidate();
     }
 }

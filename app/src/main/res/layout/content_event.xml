@@ -2,8 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:id="@+id/background_table">
+    android:id="@+id/background_table"
+    tools:context="com.streamnow.lindaumobile.activities.EventActivity"
+    tools:showIn="@layout/activity_event">
 
 
 
@@ -11,30 +14,14 @@
                 android:id="@+id/RelativeLayout1"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
-                android:layout_height="fill_parent"
+                android:layout_height="match_parent"
                 android:orientation="vertical" >
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/LinearLayout1"
-                    android:layout_marginTop="10dp">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/left_arrow_events"
-                        android:src="@drawable/left_arrow"
-                        android:padding="12dp"
-                        android:layout_marginBottom="6dp"
-                        android:layout_marginLeft="8dp"/>
-                </LinearLayout>
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/LinearLayout1">
+                    android:layout_marginTop="62dp">
 
                     <ScrollView
                         android:layout_width="fill_parent"

@@ -28,25 +28,53 @@
             android:layout_marginBottom="6dp"
             android:layout_marginLeft="8dp" />
     </LinearLayout>
-    <View
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_below="@id/layout_arrow"
-        android:id="@+id/divider" />
-    <ListView
-        android:id="@+id/settings_menu_list_view"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_list_view"
+        android:layout_below="@id/layout_arrow">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/layout_arrow"
+            android:id="@+id/divider" />
+
+        <ListView
+            android:id="@+id/settings_menu_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/layout_arrow"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true">
+        </ListView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/settings_menu_list_view"
+            android:id="@+id/dividerBottom" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/layout_arrow"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="false"
-        android:headerDividersEnabled="false"
-        android:footerDividersEnabled="false"
-        android:drawSelectorOnTop="false"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true">
-    </ListView>
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="false"
+        android:layout_marginBottom="25dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_version"
+            android:gravity="center"
+            android:textSize="15sp" />
+    </LinearLayout>
 
 
 </RelativeLayout>

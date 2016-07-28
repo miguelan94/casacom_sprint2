@@ -55,7 +55,8 @@ public class SettingsAdapter extends BaseAdapter {
         }
 
         LinearLayout row_settings_bgnd = (LinearLayout)convertView.findViewById(R.id.row_settings_bgnd);
-        row_settings_bgnd.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorService);
+       // row_settings_bgnd.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorService);
+        row_settings_bgnd.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.backgroundColorSmartphone);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.row_settings_icon);
         TextView textView = (TextView) convertView.findViewById(R.id.row_settings_text);
         textView.setTextColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.fontColorSmartphone);
@@ -94,10 +95,10 @@ public class SettingsAdapter extends BaseAdapter {
             imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.profile));
             textView.setText(items.get(position));
         }else if(position==1){
-            imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.contacts));
+            imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.logout));
             textView.setText(items.get(position));
         } else if(position==2){
-            imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.logout));
+            imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.contacts));
             textView.setText(items.get(position));
         } else if(position==3){
             imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.buy));

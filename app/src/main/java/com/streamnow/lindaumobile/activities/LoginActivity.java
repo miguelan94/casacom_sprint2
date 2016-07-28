@@ -21,8 +21,11 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.security.KeyPairGeneratorSpec;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -47,17 +50,38 @@ import com.streamnow.lindaumobile.datamodel.LDSessionUser;
 import com.streamnow.lindaumobile.lib.LDConnection;
 import com.streamnow.lindaumobile.utils.Lindau;
 
+
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.PrivateKey;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.zip.Inflater;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.security.auth.x500.X500Principal;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -73,10 +97,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
     private EditText passwdEditText;
     private ImageView main_logo;
     private Switch switch_logged;
+    private int colorBP;
+    private  KeyStore keyStore;
 
 
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -89,17 +116,37 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         //getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
         setContentView(R.layout.activity_login);
+
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // createNewKeys("test");
+       // String cipherText = encryptString("test","cipher");
+       //System.out.println(cipherText);
+        //System.out.println("Descrypt: " + decryptString("test",cipherText));
+
+
+
+
         LinearLayout background = (LinearLayout)findViewById(R.id.login_background);
+        colorBP = Lindau.getInstance().colorFromRGBAString(getIntent().getStringExtra("ColorBP"));
         main_logo = (ImageView)findViewById(R.id.main_logo);
         loginButton = (Button) this.findViewById(R.id.loginButton);
         resetButton = (Button)findViewById(R.id.resetButton);
         switch_logged = (Switch)findViewById(R.id.switch_loggged);
         switch_logged.getThumbDrawable().setColorFilter(getResources().getColor(R.color.switchLogged), PorterDuff.Mode.MULTIPLY);
+        switch_logged.getTrackDrawable().setColorFilter(colorBP, PorterDuff.Mode.MULTIPLY);
         switch_logged.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    switch_logged.getThumbDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+                    switch_logged.getThumbDrawable().setColorFilter(colorBP, PorterDuff.Mode.MULTIPLY);
+
 
                 }else{
                     switch_logged.getThumbDrawable().setColorFilter(getResources().getColor(R.color.switchLogged) , PorterDuff.Mode.MULTIPLY);
@@ -114,53 +161,50 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         if(getIntent().getStringExtra("BP")!=null){
             if(getIntent().getStringExtra("BP").equals("Limmat")){
                 Lindau.getInstance().appId = "com.streamnow.limmatmobile";
-                System.out.println("Limmat");
                 main_logo.setImageResource(R.drawable.limmat_logo);
-
-                String rgba = getIntent().getStringExtra("ColorBP");
-                System.out.println("Color: " + colorFromRGBAString(rgba));
-                //loginButton.setBackgroundColor(getResources().getColor(Lindau.getInstance().colorFromRGBAString(getIntent().getStringExtra("ColorBP"))));
-                //resetButton.setBackgroundColor(getResources().getColor(Lindau.getInstance().colorFromRGBAString(getIntent().getStringExtra("ColorBP"))));
+                loginButton.setBackgroundColor(colorBP);
+                resetButton.setBackgroundColor(colorBP);
                 Lindau.getInstance().appDemoAccount = "demo.limmat";
             }
             else if(getIntent().getStringExtra("BP").equals("SBB")){
                 Lindau.getInstance().appId = "com.streamnow.sbbmobile";
                 main_logo.setImageResource(R.drawable.sbb_logo);
-               // main_logo.setAdjustViewBounds(true);
-                loginButton.setBackgroundColor(Color.rgb(197,1,44));
-                resetButton.setBackgroundColor(Color.rgb(197,1,44));
+                loginButton.setBackgroundColor(colorBP);
+                resetButton.setBackgroundColor(colorBP);
                 Lindau.getInstance().appDemoAccount = "demo.sbb";
             }
             else if(getIntent().getStringExtra("BP").equals("SNLiving")){
                 Lindau.getInstance().appId = "com.streamnow.lsmobile";
                 main_logo.setImageResource(R.drawable.snliving_logo);
-                loginButton.setBackgroundColor(Color.rgb(0,0,0));
-                resetButton.setBackgroundColor(Color.rgb(0,0,0));
+                loginButton.setBackgroundColor(colorBP);
+                resetButton.setBackgroundColor(colorBP);
                 Lindau.getInstance().appDemoAccount = "demo.snliving";
             }
             else if(getIntent().getStringExtra("BP").equals("Mia")){
                 Lindau.getInstance().appId = "com.streamnow.miamobile";
                 background.setBackgroundColor(Color.rgb(255,255,255));
                 main_logo.setImageResource(R.drawable.mia_logo);
-                loginButton.setBackgroundColor(Color.rgb(197,1,44));
-                resetButton.setBackgroundColor(Color.rgb(197,1,44));
+                loginButton.setBackgroundColor(colorBP);
+                resetButton.setBackgroundColor(colorBP);
                 Lindau.getInstance().appDemoAccount = "demo.mia";
             }
             else if(getIntent().getStringExtra("BP").equals("CS")){
                 Lindau.getInstance().appId = "com.streamnow.csmobile";
                 background.setBackgroundColor(Color.rgb(255,255,255));
                 main_logo.setImageResource(R.drawable.credit_suisse_logo);
-                loginButton.setBackgroundColor(Color.rgb(0,50,83));
-                resetButton.setBackgroundColor(Color.rgb(0,50,83));
+                loginButton.setBackgroundColor(colorBP);
+                resetButton.setBackgroundColor(colorBP);
                 Lindau.getInstance().appDemoAccount = "democs";
             }
             else if(getIntent().getStringExtra("BP").equals("Lindau2")){
                 Lindau.getInstance().appId ="com.streamnow.lindaumobile2";
                 Lindau.getInstance().appDemoAccount = "demo.lindau";
+
             }
         }else{
                 Lindau.getInstance().appId ="com.streamnow.lindaumobile";
                 Lindau.getInstance().appDemoAccount = "demo.lindau";
+
         }
 
 
@@ -281,7 +325,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         //{
             LDConnection.setCurrentUrlString(null);
             RequestParams requestParams = new RequestParams("app", Lindau.getInstance().appId);
-            System.out.println("App ID: " + Lindau.getInstance().appId);
             LDConnection.get("getURL", requestParams, new JsonHttpResponseHandler()
             {
                 @Override
@@ -303,7 +346,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    System.out.println("onFailure json" + errorResponse.toString());
+                    System.out.println("onFailure json" );
                 }
 
                 @Override
@@ -399,7 +442,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                     sessionUser = null;
                     e.printStackTrace();
                 }
-                progressDialog.dismiss();
+
 
                 if( sessionUser != null && sessionUser.accessToken != null )
                 {
@@ -417,20 +460,26 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                         prefEditor.putString("refresh_token",sessionUser.refreshToken);
                         prefEditor.putBoolean("keepSession",true);
                         prefEditor.putString("AppId",Lindau.getInstance().appId);
+
+                        createNewKeys("livingservices");
+                        String cipherPass = encryptString("livingservices",password);
                         prefEditor.putString("user",username);
-                        prefEditor.putString("pass",password);
+                        prefEditor.putString("pass",cipherPass);
                         prefEditor.apply();
                     }else{
                         prefEditor.putBoolean("keepSession",false);
                         prefEditor.apply();
                     }
 
+                    progressDialog.dismiss();
                     Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                     startActivity(intent);
                     finish();
+
                 }
                 else
                 {
+                    progressDialog.dismiss();
                     showAlertDialog(getString(R.string.login_error));
                 }
             }
@@ -462,7 +511,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
     private void showAlertDialogReset(int msg)
     {
-        System.out.println("Dimensions------> " + main_logo.getWidth() + " " + main_logo.getHeight());
         final EditText inputEmail = new EditText(this);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.app_name)
@@ -511,16 +559,72 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                 .setIcon(R.mipmap.ic_launcher)
                 .show();
     }
-    private int colorFromRGBAString(String rgbaString)
-    {
-        String[] colors = rgbaString.substring(5, rgbaString.length() - 1 ).split(",");
-        int r = Integer.parseInt(colors[0].trim());
-        int g = Integer.parseInt(colors[1].trim());
-        int b = Integer.parseInt(colors[2].trim());
-        int a = Integer.parseInt(colors[3].trim()) * 255;
 
-        return (r << 16) | (g << 8) | (b) | (a << 24);
+    private void refreshKeys(){
+        List<String > keyAliases = new ArrayList<>();
+        try {
+            Enumeration<String> aliases = keyStore.aliases();
+            while (aliases.hasMoreElements()) {
+                keyAliases.add(aliases.nextElement());
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private  void createNewKeys(String alias) {
+        try {
+
+            if (!keyStore.containsAlias(alias)) {
+                Calendar start = Calendar.getInstance();
+                Calendar end = Calendar.getInstance();
+                end.add(Calendar.YEAR, 1);
+                KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(this)
+                        .setAlias(alias)
+                        .setSubject(new X500Principal("CN=Sample Name, O=Android Authority"))
+                        .setSerialNumber(BigInteger.ONE)
+                        .setStartDate(start.getTime())
+                        .setEndDate(end.getTime())
+                        .build();
+                KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
+                generator.initialize(spec);
+                KeyPair keyPair = generator.generateKeyPair();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        refreshKeys();
+    }
+
+    private  String encryptString(String alias , String text) {
+        String encryptedText = null;
+        try {
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(alias, null);
+            RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
+            if(text.isEmpty()) {
+                return "";
+            }
+
+            Cipher inCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+            inCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            CipherOutputStream cipherOutputStream = new CipherOutputStream(
+                    outputStream, inCipher);
+            cipherOutputStream.write(text.getBytes("UTF-8"));
+            cipherOutputStream.close();
+
+            byte [] vals = outputStream.toByteArray();
+            encryptedText = Base64.encodeToString(vals, Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return encryptedText;
+    }
+
 }
 
 /*

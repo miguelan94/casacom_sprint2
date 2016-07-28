@@ -33,6 +33,7 @@ import com.streamnow.lindaumobile.lib.LDConnection;
 import com.streamnow.lindaumobile.utils.Lindau;
 import com.streamnow.lindaumobile.utils.MenuAdapter;
 
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -126,6 +127,7 @@ public class MenuActivity extends BaseActivity
                     Intent i = new Intent(MenuActivity.this,SettingsActivity.class);
                     i.putExtra("main_menu",true);
                     startActivity(i);
+
                 }
             });
         }
@@ -167,17 +169,12 @@ public class MenuActivity extends BaseActivity
 
             services = sessionUser.getAvailableServicesForCategoryId(categoryId);
             final LDService service = (LDService) services.get(position);
-            System.out.println("service clicked-----" + service.name + "id " + service.id + " category " + service.categoryId);
             if (service.type.equals("2"))
             {
                 final Intent intent = new Intent(this, WebViewActivity.class);
                 intent.putExtra("api_url", service.apiUrl);
                 intent.putExtra("service_id", service.id);
                 if(categoryId.equals("5")){
-
-                    final String pass = getIntent().getStringExtra("user_vodka");
-                    final String user = getIntent().getStringExtra("pass_vodka");
-                    //call API vodka
                     RequestParams requestParams = new RequestParams();
                     requestParams.add("appId","5033d287e70e42f0a5a9f44001cb2d");
                     requestParams.add("userId",getIntent().getStringExtra("user_vodka"));
@@ -269,7 +266,6 @@ public class MenuActivity extends BaseActivity
             {
 
                 LDService service = (LDService) services.get(0);
-                System.out.println("size 1, id: " + service.id + "type: " + service.type + "name: " + service.name + "url api: " + service.apiUrl);
                     //check service type
                 if (service.type.equals("1"))
                 {
@@ -306,7 +302,6 @@ public class MenuActivity extends BaseActivity
                 intent.putExtra("category_id", sessionUser.categories.get(position).id);
                 intent.putExtra("sub_menu", true);
                 if(sessionUser.categories.get(position).id.equals("5")){//entertainment
-                    System.out.println("access token: " + sessionUser.accessToken);
                     if(Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP || Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1){ //API 21-22
                         showAlertDialog(getResources().getString(R.string.no_entertainment_avaliable));
                     }
@@ -316,14 +311,12 @@ public class MenuActivity extends BaseActivity
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, JSONObject response)
                             {
-                                System.out.println("response:----" + response.toString());
                                 try{
                                     if(response.getJSONObject("status").getString("status").equals("ok")){
                                         intent.putExtra("user_vodka",response.getJSONObject("status").getJSONObject("credentials").getString("username"));
                                         intent.putExtra("pass_vodka",response.getJSONObject("status").getJSONObject("credentials").getString("password"));
                                     }
                                     else{
-                                        System.out.println("response is not ok");
                                     }
                                     startActivity(intent);
 

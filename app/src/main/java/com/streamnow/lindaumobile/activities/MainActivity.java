@@ -1,5 +1,6 @@
 package com.streamnow.lindaumobile.activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -11,8 +12,13 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.security.KeyPairGeneratorSpec;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,16 +36,33 @@ import com.streamnow.lindaumobile.lib.LDConnection;
 import com.streamnow.lindaumobile.utils.DocMenuAdapter;
 import com.streamnow.lindaumobile.utils.Lindau;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.security.auth.x500.X500Principal;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -47,13 +70,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private String[] arrayString = null;
     private SharedPreferences preferences;
-
+    private  KeyStore keyStore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Intent intent = new Intent(this, RegistrationIntentService.class);
+        //startService(intent);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if(preferences.getBoolean("keepSession",false) && !preferences.getString("AppId","").equalsIgnoreCase("")){
             if(!preferences.getString("access_token","").equals("")){
+                try {
+                    keyStore = KeyStore.getInstance("AndroidKeyStore");
+                    keyStore.load(null);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
                 Lindau.getInstance().appId = preferences.getString("AppId","");
                 System.out.println("AppId----------->"+Lindau.getInstance().appId);
                 if(!LDConnection.isSetCurrentUrl()){
@@ -126,38 +160,38 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         Intent intent = new Intent(this,LoginActivity.class);
         if(v.getTag().equals("Limmat")){
             intent.putExtra("BP","Limmat");
-            intent.putExtra("ColorBP","(215,10,23,255)");
+            intent.putExtra("ColorBP","rgba(215,10,23,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("Lindau")){
             //Intent i = new Intent(this, LoginActivity.class);
             //intent.putExtra("BP","Lindau");
-            intent.putExtra("ColorBP","(28,99,13)");
+            intent.putExtra("ColorBP","rgba(44,159,20,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("Lindau2")){
             intent.putExtra("BP","Lindau2");
-            intent.putExtra("ColorBP","(28,99,13)");
+            intent.putExtra("ColorBP","rgba(44,159,20,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("SBB")){
             intent.putExtra("BP","SBB");
-            intent.putExtra("ColorBP","(197,1,44)");
+            intent.putExtra("ColorBP","rgba(197,1,44,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("Mia")){
             intent.putExtra("BP","Mia");
-            intent.putExtra("ColorBP","(197,1,44)");
+            intent.putExtra("ColorBP","rgba(197,1,44,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("SNLiving")){
             intent.putExtra("BP","SNLiving");
-            intent.putExtra("ColorBP","(0,0,0)");
+            intent.putExtra("ColorBP","rgba(0,0,0,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("CS")){
             intent.putExtra("BP","CS");
-            intent.putExtra("ColorBP","(0,50,83)");
+            intent.putExtra("ColorBP","rgba(0,50,83,1)");
             startActivity(intent);
         }
     }
@@ -169,7 +203,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
 
     private void getURL(){
-        System.out.println("GET URL");
         RequestParams requestParams = new RequestParams("app", Lindau.getInstance().appId);
             LDConnection.get("getURL",requestParams, new JsonHttpResponseHandler(){
                 @Override
@@ -220,7 +253,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         if(difference>0 && difference<=100 ){
             //refresh
-            System.out.println("refresh");
 
             RequestParams requestParams = new RequestParams();
             requestParams.add("access_token",preferences.getString("access_token",""));
@@ -270,10 +302,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         }else if(difference<=0){
             //login
-            System.out.println("login required");
 
+            System.out.println("login");
             final String username = preferences.getString("user","");
-            final String password = preferences.getString("pass","");
+            String cipherPassword = preferences.getString("pass","");
+            final String password = decryptString("livingservices",cipherPassword);
+
             RequestParams requestParams = new RequestParams();
             requestParams.add("email", username);
             requestParams.add("password", password);
@@ -314,8 +348,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                         prefEditor.putString("refresh_token",sessionUser.refreshToken);
                         prefEditor.putBoolean("keepSession",true);
                         prefEditor.putString("AppId",Lindau.getInstance().appId);
+
+                        createNewKeys("livingservices");
+                        String cipherPass = encryptString("livingservices",password);
                         prefEditor.putString("user",username);
-                        prefEditor.putString("pass",password);
+                        prefEditor.putString("pass",cipherPass);
                         prefEditor.apply();
                         Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                         startActivity(intent);
@@ -342,7 +379,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void continueCheckLogin(){
-        System.out.println("continue check login");
         String session = preferences.getString("session_user","");
         if(!session.equalsIgnoreCase("")){
             LDSessionUser LDsessionUser;
@@ -370,6 +406,103 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 finish();
             }
         }
+    }
+
+
+    private String decryptString(String alias, String cipherText) {
+        String decryptedText = null;
+        try {
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(alias, null);
+            PrivateKey privateKey = privateKeyEntry.getPrivateKey();
+
+            Cipher output = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            output.init(Cipher.DECRYPT_MODE, privateKey);
+
+
+
+            CipherInputStream cipherInputStream = new CipherInputStream(
+                    new ByteArrayInputStream(Base64.decode(cipherText, Base64.DEFAULT)), output);
+            ArrayList<Byte> values = new ArrayList<>();
+            int nextByte;
+            while ((nextByte = cipherInputStream.read()) != -1) {
+                values.add((byte)nextByte);
+            }
+
+            byte[] bytes = new byte[values.size()];
+            for(int i = 0; i < bytes.length; i++) {
+                bytes[i] = values.get(i).byteValue();
+            }
+
+            decryptedText = new String(bytes, 0, bytes.length, "UTF-8");
+
+        } catch (Exception e) {
+            Log.e("Exception", Log.getStackTraceString(e));
+            e.printStackTrace();
+        }
+        return decryptedText;
+    }
+    private void refreshKeys(){
+        List<String > keyAliases = new ArrayList<>();
+        try {
+            Enumeration<String> aliases = keyStore.aliases();
+            while (aliases.hasMoreElements()) {
+                keyAliases.add(aliases.nextElement());
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private  void createNewKeys(String alias) {
+        try {
+
+            if (!keyStore.containsAlias(alias)) {
+                KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
+                    Calendar start = Calendar.getInstance();
+                    Calendar end = Calendar.getInstance();
+                    end.add(Calendar.YEAR, 1);
+                    KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(this)
+                            .setAlias(alias)
+                            .setSubject(new X500Principal("CN=Sample Name, O=Android Authority"))
+                            .setSerialNumber(BigInteger.ONE)
+                            .setStartDate(start.getTime())
+                            .setEndDate(end.getTime())
+                            .build();
+                    generator.initialize(spec);
+                KeyPair keyPair = generator.generateKeyPair();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        refreshKeys();
+    }
+
+    private  String encryptString(String alias , String text) {
+        String encryptedText = null;
+        try {
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(alias, null);
+            RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
+
+            Cipher inCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+            inCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            CipherOutputStream cipherOutputStream = new CipherOutputStream(
+                    outputStream, inCipher);
+            cipherOutputStream.write(text.getBytes("UTF-8"));
+            cipherOutputStream.close();
+
+            byte [] vals = outputStream.toByteArray();
+            encryptedText = Base64.encodeToString(vals, Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return encryptedText;
     }
 
 

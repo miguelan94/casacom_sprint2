@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -18,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -31,9 +34,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -50,7 +56,18 @@ public class SettingsActivity extends BaseActivity {
 
         RelativeLayout settings_menu = (RelativeLayout)findViewById(R.id.settings_menu_background);
         settings_menu.setBackgroundColor(sessionUser.userInfo.partner.backgroundColorSmartphone);
-
+        TextView textVersion = (TextView)findViewById(R.id.text_version);
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat dateFormatLocal = new SimpleDateFormat("yyyyMMdd");
+        dateFormatLocal.setTimeZone(TimeZone.getDefault());
+        String time = dateFormatLocal.format(new Date());
+        textVersion.setTextColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.fontColorSmartphone);
+        textVersion.setText(getString(R.string.app_name) + " " + pInfo.versionName + " - " + time);
         if(getIntent().getBooleanExtra("main_menu",true)){
             this.items = new ArrayList<>();
             String [] list = {getResources().getString(R.string.profile),getResources().getString(R.string.contacts),getResources().getString(R.string.logout),getResources().getString(R.string.shopping)};
@@ -59,7 +76,9 @@ public class SettingsActivity extends BaseActivity {
             items.add(1,list[2]);
         }
         View dividerTop = findViewById(R.id.divider);
+        View dividerBottom = findViewById(R.id.dividerBottom);
         dividerTop.setBackgroundColor(sessionUser.userInfo.partner.lineColorSmartphone);
+        dividerBottom.setBackgroundColor(sessionUser.userInfo.partner.lineColorSmartphone);
         ListView listView = (ListView)findViewById(R.id.settings_menu_list_view);
         listView.setDivider(new ColorDrawable(sessionUser.userInfo.partner.lineColorSmartphone));
         listView.setDividerHeight(1);
@@ -110,7 +129,6 @@ public class SettingsActivity extends BaseActivity {
 
             RequestParams requestParams = new RequestParams();
             //requestParams.add("access_token",sessionUser.accessToken);
-            System.out.println("URL: " + LDConnection.getAbsoluteUrl("logout"));
             LDConnection.get("logout", requestParams, new JsonHttpResponseHandler()
             {
                 @Override

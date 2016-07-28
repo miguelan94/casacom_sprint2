@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -48,12 +49,12 @@ public class ContactActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        View backView = findViewById(R.id.contact_view_bgnd);
+        LinearLayout bgnd = (LinearLayout)findViewById(R.id.bar_bgnd);
         ImageView imageView = (ImageView) findViewById(R.id.contact_bgnd_image);
 
         int colorTop = Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorTop;
         
-        backView.setBackgroundColor(colorTop);
+        bgnd.setBackgroundColor(colorTop);
         imageView.setColorFilter(colorTop, PorterDuff.Mode.SRC_ATOP);
         imageView.invalidate();
 

@@ -61,7 +61,7 @@ public class WebViewActivity extends BaseActivity
 
         setContentView(R.layout.activity_web_view);
 
-        View backView = findViewById(R.id.view_bgnd);
+        LinearLayout bgnd = (LinearLayout)findViewById(R.id.bar_bgnd);
         ImageView imageView = (ImageView) findViewById(R.id.bgnd_image);
         ImageView leftArrow = (ImageView)findViewById(R.id.image_left_arrow);
         leftArrow.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +86,7 @@ public class WebViewActivity extends BaseActivity
         {
             int colorTop = Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorTop;
 
-            backView.setBackgroundColor(colorTop);
+            bgnd.setBackgroundColor(colorTop);
             imageView.setColorFilter(colorTop, PorterDuff.Mode.SRC_ATOP);
             imageView.invalidate();
 

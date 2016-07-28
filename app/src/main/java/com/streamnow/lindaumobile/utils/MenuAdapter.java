@@ -137,13 +137,9 @@ public class MenuAdapter extends BaseAdapter
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         //paint.setStrokeWidth(0.5f);
         paint.setAntiAlias(true);
-
-
-
         bgnd.setImageBitmap(bitMap);
         canvas.drawCircle(75,75,55,paint);
 
         bgnd.invalidate();
-
     }
 }
