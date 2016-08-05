@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -18,6 +20,7 @@ import com.loopj.android.http.RequestParams;
 import com.streamnow.lindaumobile.R;
 import com.streamnow.lindaumobile.datamodel.LDEvents;
 import com.streamnow.lindaumobile.lib.LDConnection;
+import com.streamnow.lindaumobile.utils.Lindau;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +39,21 @@ public class EventActivity extends BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_event);
         progressDialog = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.please_wait), true);
 
+        //View view_bgnd = findViewById(R.id.view_bgnd_event);
+        LinearLayout bgnd = (LinearLayout)findViewById(R.id.bar_bgnd);
+        bgnd.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorTop);
+        ImageView bgnd_image = (ImageView)findViewById(R.id.event_bgnd_image);
+        bgnd_image.setColorFilter(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorTop, PorterDuff.Mode.SRC_ATOP);
+        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_event);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         RequestParams requestParams = new RequestParams();
+        requestParams.add("access_token", Lindau.getInstance().getCurrentSessionUser().accessToken);
         LDConnection.post("getNotifications", requestParams, new ResponseHandlerJson());
     }
 
@@ -112,12 +129,12 @@ public class EventActivity extends BaseActivity implements View.OnClickListener 
     private void showPopUp(int position){
         new AlertDialog.Builder(this)
                 .setTitle(R.string.app_name)
-                .setMessage(R.string.create_date_event + events.get(position).create_date + "\n"
-                        + "\n" + R.string.date_event + events.get(position).date + "\n"
-                        + "\n" + R.string.time_event + events.get(position).time + "\n"
-                        + "\n" + R.string.title_event + events.get(position).title + "\n"
-                        + "\n" + R.string.description_event + events.get(position).description + "\n"
-                        + "\n" + R.string.place_event + events.get(position).place)
+                .setMessage(getResources().getString(R.string.create_date_event)+ ": " + events.get(position).create_date + "\n"
+                        + "\n" + getResources().getString(R.string.date_event) + ": " + events.get(position).date + "\n"
+                        + "\n" + getResources().getString(R.string.time_event) + ": " + events.get(position).time + "\n"
+                        + "\n" + getResources().getString(R.string.title_event) + ": " + events.get(position).title + "\n"
+                        + "\n" + getResources().getString(R.string.description_event) + ": " + events.get(position).description + "\n"
+                        + "\n" + getResources().getString(R.string.place_event) + ": " + events.get(position).place)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int which) {}
@@ -153,7 +170,7 @@ public class EventActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse)
         {
-            System.out.println("getEvent onFailure json");
+            System.out.println("getEvent onFailure json" + errorResponse.toString());
             progressDialog.dismiss();
         }
     }

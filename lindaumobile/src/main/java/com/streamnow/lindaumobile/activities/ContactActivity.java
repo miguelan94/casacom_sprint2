@@ -12,9 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Picasso;
 import com.streamnow.lindaumobile.R;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class ContactActivity extends BaseActivity
+public class    ContactActivity extends BaseActivity
 {
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
@@ -48,12 +51,14 @@ public class ContactActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-        View backView = findViewById(R.id.contact_view_bgnd);
+        String apiUrlString = getIntent().getStringExtra("api_url");
+
+        LinearLayout bgnd = (LinearLayout)findViewById(R.id.bar_bgnd);
         ImageView imageView = (ImageView) findViewById(R.id.contact_bgnd_image);
 
         int colorTop = Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorTop;
-        
-        backView.setBackgroundColor(colorTop);
+
+        bgnd.setBackgroundColor(colorTop);
         imageView.setColorFilter(colorTop, PorterDuff.Mode.SRC_ATOP);
         imageView.invalidate();
 
@@ -69,6 +74,14 @@ public class ContactActivity extends BaseActivity
             }
         });
 
+        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_contact);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         this.avatarImageView = (ImageView) findViewById(R.id.contact_avatar);
         this.phoneTextView = (TextView) findViewById(R.id.contact_phone);
         this.emailTextView = (TextView) findViewById(R.id.contact_email);
@@ -79,8 +92,28 @@ public class ContactActivity extends BaseActivity
         buttonSend.setBackgroundColor(colorTop);
 
         progressDialog = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.please_wait), true);
-        RequestParams requestParams = new RequestParams("access_token", Lindau.getInstance().getCurrentSessionUser().accessToken);
-        LDConnection.get("getContact", requestParams, new ResponseHandlerJson());
+
+        RequestParams requestParams = new RequestParams();
+
+        if(apiUrlString==null || apiUrlString.equals("")){
+
+            requestParams.add("access_token", Lindau.getInstance().getCurrentSessionUser().accessToken);
+            LDConnection.get("getContact", requestParams, new ResponseHandlerJson());
+        }
+        else{
+            String endPoint = apiUrlString+"getContacts";
+            AsyncHttpClient httpClient = new AsyncHttpClient();
+            httpClient.setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
+            httpClient.setEnableRedirects(true);
+            httpClient.get(endPoint,requestParams,new ResponseHandlerJson());
+        }
+
+
+
+
+
+
+
     }
 
     private void showAlertDialog(String msg)

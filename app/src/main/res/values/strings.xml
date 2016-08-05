@@ -41,6 +41,9 @@
     <string name="place_event">Where</string>
     <string name="no_mail_reset">Enter your email or username</string>
     <string name="password_reseted">Password account reseted</string>
+    <string name="reset_error_title">Error</string>
+    <string name="reset_error_content">The given information is not right.</string>
+    <string name="tittle_password_reset">E-mail has been sent!</string>
     <string name="no_entertainment_avaliable">This functionality does not work with Android 5.x</string>
     <string name="select_BP">Select</string>
     <string name="switch_loggued">Stay Logged</string>

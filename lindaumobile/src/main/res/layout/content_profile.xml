@@ -42,7 +42,7 @@
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center_horizontal">
+                        android:gravity="center_vertical|center_horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -55,14 +55,14 @@
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:gravity="center">
 
                         <ImageView
                             android:id="@+id/profile_avatar"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/contact_placeholder"
-                            />
+                            android:src="@drawable/contact_placeholder" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -92,8 +92,7 @@
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:background="#fffefe">
+                        android:layout_height="35dp">
 
                         <EditText
                             android:layout_width="match_parent"
@@ -101,7 +100,8 @@
                             android:id="@+id/name_data"
                             android:singleLine="false"
                             android:background="@android:color/transparent"
-                            android:textColor="#797777" />
+                            android:textColor="#ffffff"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -131,15 +131,15 @@
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:background="#ffffff">
+                        android:layout_height="35dp">
 
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/lastname_data"
                             android:background="@android:color/transparent"
-                            android:textColor="#797777" />
+                            android:textColor="#ffffff"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -169,15 +169,15 @@
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:background="#ffffff">
+                    android:layout_height="35dp">
 
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:id="@+id/telephone_data"
                         android:background="@android:color/transparent"
-                        android:textColor="#797777" />
+                        android:textColor="#ffffff"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -207,8 +207,7 @@
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:background="#ffffff">
+                        android:layout_height="35dp">
 
                         <EditText
                             android:layout_width="match_parent"
@@ -217,7 +216,8 @@
                             android:singleLine="false"
                             android:cursorVisible="false"
                             android:background="@android:color/transparent"
-                            android:textColor="#797777" />
+                            android:textColor="#ffffff"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -247,15 +247,15 @@
                     <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:background="#ffffff">
+                        android:layout_height="35dp">
 
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:id="@+id/email_data"
                             android:background="@android:color/transparent"
-                            android:textColor="#797777" />
+                            android:textColor="#ffffff"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
 

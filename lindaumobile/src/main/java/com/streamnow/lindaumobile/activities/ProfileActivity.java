@@ -1,6 +1,7 @@
 package com.streamnow.lindaumobile.activities;
 
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -19,6 +20,18 @@ public class ProfileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        ImageView bgnd_image = (ImageView)findViewById(R.id.profile_bgnd_image);
+        bgnd_image.setColorFilter(sessionUser.userInfo.partner.colorTop, PorterDuff.Mode.SRC_ATOP);
+
+        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_profile);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         View backView = findViewById(R.id.profile_view_bgnd);
         backView.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.backgroundColorSmartphone);
         TextView profile_title = (TextView)findViewById(R.id.profile_title);

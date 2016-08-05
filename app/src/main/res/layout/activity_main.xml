@@ -6,6 +6,6 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:theme="@style/AppTheme"
-    tools:context="com.streamnow.lindaumobile.activities.MainActivity">
+    tools:context="com.streamnow.lsmobile.activities.MainActivity">
     <include layout="@layout/content_main" />
 </android.support.design.widget.CoordinatorLayout>

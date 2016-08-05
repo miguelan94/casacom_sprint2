@@ -45,4 +45,9 @@ public class LDConnection
     {
         _currentUrlString = urlString;
     }
+
+    public static AsyncHttpClient getHttpClient(){
+        return httpClient;
+    }
+
 }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.streamnow.lindaumobile.activities.ContactActivity"
+    tools:context="com.streamnow.lsmobile.activities.ContactActivity"
     android:id="@+id/contact_view_bgnd">
 
     <include layout="@layout/content_contact"/>
@@ -23,8 +23,9 @@
             <ImageView
                 android:id="@+id/contact_bgnd_image"
                 android:layout_width="match_parent"
-                android:layout_height="66dp"
-                android:src="@drawable/navbar_bgnd"/>
+                android:layout_height="wrap_content"
+                android:src="@drawable/navbar_bgnd"
+                android:adjustViewBounds="true" />
 
             <ImageView
                 android:layout_width="wrap_content"

@@ -6,7 +6,7 @@
     <string name="login_button_title1">Weiter ohne Login</string>
     <string name="reset_button_title">Passwort zurücksetzen</string>
     <string name="login_button_title2">Login</string>
-    <string name="please_wait">Bitte, warten Sie...</string>
+    <string name="please_wait">Es wird geladen</string>
     <string name="network_error">Es war ein Netzwerkfehler.Bitte versuchen Sie es später.</string>
     <string name="login_error">Benutzername oder Passwort falsch!</string>
     <string name="title_activity_main_menu">MainMenuActivity</string>
@@ -14,8 +14,8 @@
     <string name="title_activity_contact">ContactActivity</string>
     <string name="title_activity_docman_menu">DocmanMenuActivity</string>
     <string name="contact_send">Senden</string>
-    <string name="contact_reset">Reset</string>
-    <string name="opening_schedule">Öffnung Zeitplan</string>
+    <string name="contact_reset">Löschen</string>
+    <string name="opening_schedule">Öffnungszeiten</string>
     <string name="no_mail_account">Es gibt keine E-Mail -Clients installiert</string>
     <string name="send_mail">E-Mail senden</string>
     <string name="support">Unterstützen</string>
@@ -25,7 +25,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="profile">Profil</string>
     <string name="contacts">Kontakte</string>
-    <string name="logout">Ausloggen</string>
+    <string name="logout">Abmelden</string>
     <string name="shopping">Einkaufen</string>
     <string name="profile_name">Name</string>
     <string name="profile_lastname">Nachname</string>
@@ -38,9 +38,12 @@
     <string name="title_event">Titel</string>
     <string name="description_event">Beschreibung</string>
     <string name="place_event">Ort</string>
-    <string name="no_mail_reset">Geben Sie Ihre E-Mail oder Benutzername</string>
+    <string name="no_mail_reset">Geben Sie Ihre Email oder Ihren Benutzernamen ein.</string>
     <string name="password_reseted">Passwort reset</string>
+    <string name="reset_error_title">Fehler</string>
+    <string name="reset_error_content">Die Information ist nicht richtig.</string>
+    <string name="tittle_password_reset">Email gesendet</string>
     <string name="no_entertainment_avaliable">Diese Funktionalität funktioniert nicht auf Android 5.x</string>
     <string name="select_BP">wählen</string>
-    <string name="switch_loggued">Eingeloggt Bleiben</string>
+    <string name="switch_loggued">Angemeldet bleiben</string>
 </resources>

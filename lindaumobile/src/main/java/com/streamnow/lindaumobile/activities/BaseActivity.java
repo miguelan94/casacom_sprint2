@@ -1,6 +1,5 @@
 package com.streamnow.lindaumobile.activities;
 
-import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,7 @@ import com.streamnow.lindaumobile.utils.Lindau;
 public class BaseActivity extends AppCompatActivity
 {
     @Override
-    @TargetApi(21)
+    //@TargetApi(21)
     protected void onCreate(Bundle savedInstance)
     {
         super.onCreate(savedInstance);

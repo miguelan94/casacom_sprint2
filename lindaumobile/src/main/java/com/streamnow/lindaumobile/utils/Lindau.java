@@ -2,7 +2,6 @@ package com.streamnow.lindaumobile.utils;
 
 import android.app.Application;
 
-import com.streamnow.lindaumobile.activities.BaseActivity;
 import com.streamnow.lindaumobile.datamodel.DMCategory;
 import com.streamnow.lindaumobile.datamodel.LDSessionUser;
 import com.streamnow.lindaumobile.interfaces.IMenuPrintable;
@@ -18,9 +17,8 @@ public class Lindau extends Application
 {
     private static Lindau sharedInstance;
 
-    //public String appId = "com.streamnow.lindaumobile";
-    //public String appId = "com.streamnow.lsmobile";
-    public String appId = "com.streamnow.lindaumobile";
+    public String appId = "com.streamnow.lindaumobile2";
+    //public String appId = "com.streamnow.lindaumobile"; //lindau
     public String appDemoAccount = "demo.lindau";
     private LDSessionUser currentSessionUser;
     private ArrayList<IMenuPrintable> userTree;

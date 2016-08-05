@@ -2,15 +2,22 @@ package com.streamnow.lindaumobile.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.streamnow.lindaumobile.R;
+import com.streamnow.lindaumobile.datamodel.DMCategory;
+import com.streamnow.lindaumobile.datamodel.DMDocument;
+import com.streamnow.lindaumobile.datamodel.LDCategory;
 import com.streamnow.lindaumobile.interfaces.IMenuPrintable;
 import com.squareup.picasso.Picasso;
 
@@ -61,9 +68,24 @@ public class MenuAdapter extends BaseAdapter
             convertView = ((Activity) context).getLayoutInflater().inflate(R.layout.main_menu_row, parent, false);
         }
         LinearLayout row_bgnd = (LinearLayout)convertView.findViewById(R.id.row_bgnd);
-        row_bgnd.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.colorService);
+        row_bgnd.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.backgroundColorSmartphone);
         IMenuPrintable menuPrintable = items.get(position);
+
+        ImageView imageArrow = (ImageView)convertView.findViewById(R.id.row_arrow);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.row_icon);
+
+
+        ImageView bgnd_circle = (ImageView)convertView.findViewById(R.id.bgnd_circle);
+        FrameLayout layout_bgnd = (FrameLayout)convertView.findViewById(R.id.layout_bgnd);
+
+
+
+
+
+
+
+        //imageView.setBackground();
+        //imageView.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.backgroundColorIconSmartphone);
         TextView textView = (TextView) convertView.findViewById(R.id.row_text);
         textView.setTextColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.fontColorSmartphone);
         Picasso.with(context)
@@ -71,6 +93,46 @@ public class MenuAdapter extends BaseAdapter
                 .into(imageView);
         textView.setText(menuPrintable.getRowTitleText());
 
+        createBitMap(bgnd_circle);
+
+
+        if(items.get(position) instanceof  LDCategory){
+            LDCategory category = (LDCategory)items.get(position);
+            if(Lindau.getInstance().getCurrentSessionUser().getAvailableServicesForCategoryId(category.id).size()>1 || category.id.equals("20")){
+                imageArrow.setVisibility(View.VISIBLE);
+            }
+            else{
+                imageArrow.setVisibility(View.INVISIBLE);
+            }
+
+            //ArrayList<LDService> services = Lindau.getInstance().getCurrentSessionUser().getAvailableServicesForCategoryId(category.id);
+          //  System.out.println("position " + position + "name of category " + category.name  +" id " + category.id + "size "+  services.size());
+
+        }
+
+
+
+
+
         return convertView;
+    }
+
+
+
+    private void createBitMap(ImageView bgnd) {
+
+        Bitmap bitMap = Bitmap.createBitmap(150, 150, Bitmap.Config.ARGB_8888);
+        bitMap = bitMap.copy(bitMap.getConfig(), true);
+        Canvas canvas = new Canvas(bitMap);
+
+        Paint paint = new Paint();
+        paint.setColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.backgroundColorIconSmartphone);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        //paint.setStrokeWidth(0.5f);
+        paint.setAntiAlias(true);
+        bgnd.setImageBitmap(bitMap);
+        canvas.drawCircle(75,75,55,paint);
+
+        bgnd.invalidate();
     }
 }

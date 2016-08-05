@@ -4,10 +4,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -39,7 +40,7 @@ public class DocmanMenuActivity extends BaseActivity
 {
     private boolean isRootMenu;
     private ArrayList<IMenuPrintable> adapterArray;
-
+    private View dividerTop;
     private ProgressDialog progressDialog;
 
     protected final LDSessionUser sessionUser = Lindau.getInstance().getCurrentSessionUser();
@@ -52,7 +53,14 @@ public class DocmanMenuActivity extends BaseActivity
 
         RelativeLayout mainBackground = (RelativeLayout) findViewById(R.id.main_background);
         mainBackground.setBackgroundColor(sessionUser.userInfo.partner.backgroundColorSmartphone);
-
+        ImageView leftArrow = (ImageView)findViewById(R.id.left_arrow_doc);
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        dividerTop = findViewById(R.id.divider);
         this.isRootMenu = getIntent().getBooleanExtra("root_menu", false);
 
         if( this.isRootMenu )
@@ -80,8 +88,10 @@ public class DocmanMenuActivity extends BaseActivity
             }
 
             final ListView listView = (ListView) findViewById(R.id.docman_menu_list_view);
+            listView.setDivider(new ColorDrawable(sessionUser.userInfo.partner.lineColorSmartphone));
+            listView.setDividerHeight(1);
             listView.setAdapter(new DocMenuAdapter(DocmanMenuActivity.this, this.adapterArray));
-
+            dividerTop.setBackgroundColor(sessionUser.userInfo.partner.lineColorSmartphone);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override
@@ -180,8 +190,10 @@ public class DocmanMenuActivity extends BaseActivity
                         if( userTreeArray.size() > 0) adapterArray.add(new DMCategory(getString(R.string.personal_docs)));
 
                         final ListView listView = (ListView) findViewById(R.id.docman_menu_list_view);
+                        dividerTop.setBackgroundColor(sessionUser.userInfo.partner.lineColorSmartphone);
+                        listView.setDivider(new ColorDrawable(sessionUser.userInfo.partner.lineColorSmartphone));
+                        listView.setDividerHeight(1);
                         listView.setAdapter(new DocMenuAdapter(DocmanMenuActivity.this, adapterArray));
-
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                         {
                             @Override
@@ -193,6 +205,7 @@ public class DocmanMenuActivity extends BaseActivity
                     }
                     else
                     {
+                        dividerTop.setVisibility(View.GONE);
                         new AlertDialog.Builder(DocmanMenuActivity.this)
                                 .setTitle(R.string.app_name)
                                 .setMessage(getString(R.string.no_docs_available))
@@ -229,7 +242,7 @@ public class DocmanMenuActivity extends BaseActivity
         public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse)
         {
             showAlertDialog(getString(R.string.network_error));
-            System.out.println("getContact onFailure json");
+            System.out.println("getContact onFailure json" + errorResponse.toString());
             progressDialog.dismiss();
         }
     }

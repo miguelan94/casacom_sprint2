@@ -1,43 +1,71 @@
 package com.streamnow.lindaumobile.activities;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.security.KeyPairGeneratorSpec;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.streamnow.lindaumobile.R;
 import com.streamnow.lindaumobile.datamodel.LDSessionUser;
 import com.streamnow.lindaumobile.lib.LDConnection;
 import com.streamnow.lindaumobile.utils.Lindau;
 
+
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherOutputStream;
+import javax.security.auth.x500.X500Principal;
+
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.cookie.Cookie;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener
 {
@@ -49,25 +77,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
     private Button resetButton;
     private EditText userEditText;
     private EditText passwdEditText;
+    private ImageView main_logo;
+    private Switch switch_logged;
+    private  KeyStore keyStore;
 
 
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-         //Locale defaultLocale  = new Locale(Locale.getDefault().getDisplayLanguage());
-       // Configuration config = new Configuration();
-       // config.
-        //config.locale = defaultLocale;
-       // getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
-
-
-            //Locale defaultLocale = new Locale( getResources().getConfiguration().locale.getDisplayLanguage());
-            //Configuration config = new Configuration();
-            //config.locale = defaultLocale;
-            //getBaseContext().getApplicationContext().getResources().updateConfiguration(config,null);
-
 
         Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
         Configuration config = new Configuration();
@@ -75,60 +96,38 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
         setContentView(R.layout.activity_login);
-        LinearLayout background = (LinearLayout)findViewById(R.id.login_background);
-        ImageView main_logo = (ImageView)findViewById(R.id.main_logo);
-        loginButton = (Button) this.findViewById(R.id.loginButton);
-        resetButton = (Button)findViewById(R.id.resetButton);
 
-        if(getIntent().getStringExtra("BP")!=null){
-            if(getIntent().getStringExtra("BP").equals("Limmat")){
-                Lindau.getInstance().appId = "com.streamnow.limmatmobile";
-                System.out.println("Limmat");
-                main_logo.setImageResource(R.drawable.limmat_logo);
-                loginButton.setBackgroundColor(Color.rgb(215,10,23));
-                resetButton.setBackgroundColor(Color.rgb(215,10,23));
-                Lindau.getInstance().appDemoAccount = "demo.limmat";
-            }
-            else if(getIntent().getStringExtra("BP").equals("SBB")){
-                Lindau.getInstance().appId = "com.streamnow.sbbmobile";
-                //background.setBackgroundColor(Color.rgb(255,255,255));
-                main_logo.setImageResource(R.drawable.sbb_logo);
-                main_logo.setAdjustViewBounds(true);
-                loginButton.setBackgroundColor(Color.rgb(197,1,44));
-                resetButton.setBackgroundColor(Color.rgb(197,1,44));
-                Lindau.getInstance().appDemoAccount = "demo.sbb";
-            }
-            else if(getIntent().getStringExtra("BP").equals("SNLiving")){
-                Lindau.getInstance().appId = "com.streamnow.lsmobile";
-                main_logo.setImageResource(R.drawable.snliving_logo);
-                loginButton.setBackgroundColor(Color.rgb(0,0,0));
-                resetButton.setBackgroundColor(Color.rgb(0,0,0));
-                Lindau.getInstance().appDemoAccount = "demo.snliving";
-            }
-            else if(getIntent().getStringExtra("BP").equals("Mia")){
-                Lindau.getInstance().appId = "com.streamnow.miamobile";
-                background.setBackgroundColor(Color.rgb(255,255,255));
-                main_logo.setImageResource(R.drawable.mia_logo);
-                loginButton.setBackgroundColor(Color.rgb(197,1,44));
-                resetButton.setBackgroundColor(Color.rgb(197,1,44));
-                Lindau.getInstance().appDemoAccount = "demo.mia";
-            }
-            else if(getIntent().getStringExtra("BP").equals("CS")){
-                Lindau.getInstance().appId = "com.streamnow.csmobile";
-                System.out.println("CS");
-                background.setBackgroundColor(Color.rgb(255,255,255));
-                main_logo.setImageResource(R.drawable.credit_suisse_logo);
-                loginButton.setBackgroundColor(Color.rgb(0,50,83));
-                resetButton.setBackgroundColor(Color.rgb(0,50,83));
-                Lindau.getInstance().appDemoAccount = "democs";
-            }
-        }else{
-            Lindau.getInstance().appId ="com.streamnow.lindaumobile";
-            Lindau.getInstance().appDemoAccount = "demo.lindau";
+        try {
+            keyStore = KeyStore.getInstance("AndroidKeyStore");
+            keyStore.load(null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
+        LinearLayout background = (LinearLayout)findViewById(R.id.login_background);
+        main_logo = (ImageView)findViewById(R.id.main_logo);
+        loginButton = (Button) this.findViewById(R.id.loginButton);
+        resetButton = (Button)findViewById(R.id.resetButton);
+        switch_logged = (Switch)findViewById(R.id.switch_loggged);
+        switch_logged.getThumbDrawable().setColorFilter(getResources().getColor(R.color.switchLogged), PorterDuff.Mode.MULTIPLY);
+        switch_logged.getTrackDrawable().setColorFilter(Color.rgb(44,159,20), PorterDuff.Mode.MULTIPLY);
+        switch_logged.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    switch_logged.getThumbDrawable().setColorFilter(Color.rgb(44,159,20), PorterDuff.Mode.MULTIPLY);
 
+
+                }else{
+                    switch_logged.getThumbDrawable().setColorFilter(getResources().getColor(R.color.switchLogged) , PorterDuff.Mode.MULTIPLY);
+                }
+            }
+        });
+        //switch_logged.setButtonTintList(buttonStates);
+        //switch_logged.getThumbDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+        //switch_logged.getTrackDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
         userEditText = (EditText) this.findViewById(R.id.userEditText);
         passwdEditText = (EditText) this.findViewById(R.id.passwdEditText);
 
@@ -136,6 +135,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         loginButton.setTag(LOGIN_BUTTON_TAG);
         resetButton.setOnClickListener(this);
         resetButton.setTag(RESET_BUTTON_TAG);
+
 
         TextWatcher textWatcher = new TextWatcher()
         {
@@ -187,6 +187,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                 return false;
             }
         });
+
+
     }
 
     @Override
@@ -244,7 +246,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         //{
             LDConnection.setCurrentUrlString(null);
             RequestParams requestParams = new RequestParams("app", Lindau.getInstance().appId);
-            System.out.println("App ID: " + Lindau.getInstance().appId);
             LDConnection.get("getURL", requestParams, new JsonHttpResponseHandler()
             {
                 @Override
@@ -266,7 +267,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    System.out.println("onFailure json" + errorResponse.toString());
+                    System.out.println("onFailure json" );
                 }
 
                 @Override
@@ -326,13 +327,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
     private void continueLogin()
     {
-        String username, password;
+        final String username, password;
 
         if( userEditText.getText().toString().isEmpty()  && passwdEditText.getText().toString().isEmpty() )
         {
             username = Lindau.getInstance().appDemoAccount;
             password = Lindau.getInstance().appDemoAccount;
-
         }
         else
         {
@@ -350,7 +350,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response)
             {
-
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                SharedPreferences.Editor prefEditor = sharedPref.edit();
                 LDSessionUser sessionUser;
 
                 try
@@ -363,23 +364,44 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                     e.printStackTrace();
                 }
 
-                progressDialog.dismiss();
 
                 if( sessionUser != null && sessionUser.accessToken != null )
                 {
+                    System.out.println("token: " + sessionUser.accessToken);
                     Lindau.getInstance().setCurrentSessionUser(sessionUser);
-                    Locale locale = new Locale(sessionUser.userInfo.language);
+                    Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
                     //Locale.setDefault(locale);
                     Configuration config = new Configuration();
                     config.locale = locale;
                     getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
+                    if(switch_logged.isChecked()){
+                        prefEditor.putString("valid_until",sessionUser.validUntil);
+                        prefEditor.putString("session_user", response.toString());
+                        prefEditor.putString("access_token",sessionUser.accessToken);
+                        prefEditor.putString("refresh_token",sessionUser.refreshToken);
+                        prefEditor.putBoolean("keepSession",true);
+                        prefEditor.putString("AppId",Lindau.getInstance().appId);
+
+                        createNewKeys("livingservices");
+                        String cipherPass = encryptString("livingservices",password);
+                        prefEditor.putString("user",username);
+                        prefEditor.putString("pass",cipherPass);
+                        prefEditor.apply();
+                    }else{
+                        prefEditor.putBoolean("keepSession",false);
+                        prefEditor.apply();
+                    }
+
+                    progressDialog.dismiss();
                     Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                     startActivity(intent);
                     finish();
+
                 }
                 else
                 {
+                    progressDialog.dismiss();
                     showAlertDialog(getString(R.string.login_error));
                 }
             }
@@ -412,10 +434,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
     private void showAlertDialogReset(int msg)
     {
         final EditText inputEmail = new EditText(this);
+        inputEmail.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+
+        layout.setPadding((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()),0,(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics()),0);
+        layout.addView(inputEmail);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.app_name)
                 .setMessage(msg)
-                .setView(inputEmail)
+                .setView(layout)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int which) {
@@ -432,11 +460,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                                     System.out.println("Response: " + response.toString());
                                     try{
                                         if(response.get("msg").equals("Ok")){
-                                            Toast.makeText(LoginActivity.this,R.string.password_reseted,Toast.LENGTH_LONG).show();
+                                               //Toast.makeText(LoginActivity.this,R.string.password_reseted,Toast.LENGTH_LONG).show();
+                                            new AlertDialog.Builder(LoginActivity.this)
+                                                    .setTitle(getString(R.string.tittle_password_reset))
+                                                    .setMessage(getString(R.string.password_reseted))
+                                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                                                    {
+                                                        public void onClick(DialogInterface dialog, int which) {}
+                                                    })
+                                                    .show();
                                         }
                                     }
                                     catch (JSONException e){
-
+                                        e.printStackTrace();
                                     }
 
                                 }
@@ -449,7 +485,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
                                 @Override
                                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                    System.out.println(" onFailure json" + errorResponse.toString());
+                                    System.out.println(" onFailure json");
+                                    try {
+                                        if(errorResponse != null && statusCode == 403 && errorResponse.getString("msg").equals("KO")){
+                                            new AlertDialog.Builder(LoginActivity.this)
+                                                    .setTitle(getString(R.string.reset_error_title))
+                                                    .setMessage(getString(R.string.reset_error_content))
+                                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener()
+                                                    {
+                                                        public void onClick(DialogInterface dialog, int which) {}
+                                                    })
+                                                    .show();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
 
                                 }
                             });
@@ -459,6 +509,75 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                 .setIcon(R.mipmap.ic_launcher)
                 .show();
     }
+
+    private void refreshKeys(){
+        List<String > keyAliases = new ArrayList<>();
+        try {
+            Enumeration<String> aliases = keyStore.aliases();
+            while (aliases.hasMoreElements()) {
+                keyAliases.add(aliases.nextElement());
+            }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private  void createNewKeys(String alias) {
+        try {
+
+            if (!keyStore.containsAlias(alias)) {
+                Calendar start = Calendar.getInstance();
+                Calendar end = Calendar.getInstance();
+                end.add(Calendar.YEAR, 1);
+                KeyPairGeneratorSpec spec = new KeyPairGeneratorSpec.Builder(this)
+                        .setAlias(alias)
+                        .setSubject(new X500Principal("CN=Sample Name, O=Android Authority"))
+                        .setSerialNumber(BigInteger.ONE)
+                        .setStartDate(start.getTime())
+                        .setEndDate(end.getTime())
+                        .build();
+                KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore");
+                generator.initialize(spec);
+                KeyPair keyPair = generator.generateKeyPair();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        refreshKeys();
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private  String encryptString(String alias , String text) {
+        String encryptedText = null;
+        try {
+
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry)keyStore.getEntry(alias, null);
+            RSAPublicKey publicKey = (RSAPublicKey) privateKeyEntry.getCertificate().getPublicKey();
+
+            Cipher inCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "AndroidOpenSSL");
+            inCipher.init(Cipher.ENCRYPT_MODE, publicKey);
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            CipherOutputStream cipherOutputStream = new CipherOutputStream(
+                    outputStream, inCipher);
+            cipherOutputStream.write(text.getBytes("UTF-8"));
+            cipherOutputStream.close();
+
+            byte [] vals = outputStream.toByteArray();
+            encryptedText = Base64.encodeToString(vals, Base64.DEFAULT);
+
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return encryptedText;
+    }
+
 }
 
 /*

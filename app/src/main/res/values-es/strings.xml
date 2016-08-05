@@ -40,6 +40,9 @@
     <string name="place_event">Lugar</string>
     <string name="no_mail_reset">Introduzca su E-mail o nombre de usuario</string>
     <string name="password_reseted">Contraseña reiniciada</string>
+    <string name="reset_error_title">Error</string>
+    <string name="reset_error_content">Los datos introducidos no son válidos.</string>
+    <string name="tittle_password_reset">Correo enviado!</string>
     <string name="no_entertainment_avaliable">Esta funcionalidad no funciona en Android 5.x</string>
     <string name="select_BP">Seleccionar</string>
     <string name="switch_loggued">Permanecer conectado</string>

@@ -6,9 +6,8 @@
     android:id="@+id/main_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.streamnow.lindaumobile.activities.DocmanMenuActivity"
+    tools:context="com.streamnow.lsmobile.activities.DocmanMenuActivity"
     tools:showIn="@layout/activity_docman_menu">
 
     <LinearLayout

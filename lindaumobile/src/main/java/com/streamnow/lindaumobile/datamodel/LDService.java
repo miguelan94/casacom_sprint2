@@ -68,6 +68,8 @@ public class LDService implements IMenuPrintable
             if(!o.isNull("category_id")) this.categoryId = o.getInt("category_id");
             if(!o.isNull("device_type")) this.deviceType = o.getString("device_type");
             if(!o.isNull("description")) this.description = o.getString("description");
+
+
         }
         catch(Exception e)
         {

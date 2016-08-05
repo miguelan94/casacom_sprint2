@@ -38,6 +38,7 @@ public class LDContact
             if(!o.isNull("fullname")) this.fullname = o.getString("fullname");
             if(!o.isNull("address")) this.address = o.getString("address");
             if(!o.isNull("url")) this.url = o.getString("url");
+
         }
         catch( Exception e )
         {

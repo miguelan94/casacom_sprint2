@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:theme="@style/AppTheme"
-    tools:context="com.streamnow.lindaumobile.activities.EventActivity"
+    tools:context="com.streamnow.lsmobile.activities.EventActivity"
     android:id="@+id/view_bgnd_event">
     <include layout="@layout/content_event" />
 
@@ -24,8 +24,9 @@
             <ImageView
                 android:id="@+id/event_bgnd_image"
                 android:layout_width="match_parent"
-                android:layout_height="66dp"
-                android:src="@drawable/navbar_bgnd"/>
+                android:layout_height="wrap_content"
+                android:src="@drawable/navbar_bgnd"
+                android:adjustViewBounds="true" />
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

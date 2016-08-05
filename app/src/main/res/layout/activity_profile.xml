@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:theme="@style/AppTheme"
-    tools:context="com.streamnow.lindaumobile.activities.ProfileActivity"
+    tools:context="com.streamnow.lsmobile.activities.ProfileActivity"
     android:id="@+id/profile_view_bgnd">
 
     <include layout="@layout/content_profile"/>
@@ -17,18 +17,9 @@
         <ImageView
             android:id="@+id/profile_bgnd_image"
             android:layout_width="match_parent"
-            android:layout_height="66dp"
-            android:src="@drawable/navbar_bgnd"/>
-        <ImageView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:src="@drawable/nav_pill"
-            android:layout_marginBottom="9dp"
-            android:adjustViewBounds="true"
-            android:maxWidth="42dp"
-            android:maxHeight="42dp"
-            android:scaleType="fitCenter"/>
+            android:src="@drawable/navbar_bgnd"
+            android:adjustViewBounds="true" />
 
 
         <ImageView
