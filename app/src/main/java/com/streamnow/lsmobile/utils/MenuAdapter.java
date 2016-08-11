@@ -14,7 +14,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.streamnow.lsmobile.R;
+import com.streamnow.lsmobile.datamodel.DMCategory;
+import com.streamnow.lsmobile.datamodel.DMDocument;
+import com.streamnow.lsmobile.datamodel.DMElement;
 import com.streamnow.lsmobile.datamodel.LDCategory;
+import com.streamnow.lsmobile.datamodel.LDService;
 import com.streamnow.lsmobile.interfaces.IMenuPrintable;
 import com.squareup.picasso.Picasso;
 
@@ -87,6 +91,15 @@ public class MenuAdapter extends BaseAdapter
         createBitMap(bgnd_circle);
 
 
+        if(items.get(position) instanceof LDService){
+            LDService service = (LDService) items.get(position);
+            if(service.id.equals("3")){
+                imageArrow.setVisibility(View.VISIBLE);
+            }
+            else{
+                imageArrow.setVisibility(View.INVISIBLE);
+            }
+        }
         if(items.get(position) instanceof  LDCategory){
             LDCategory category = (LDCategory)items.get(position);
             if(Lindau.getInstance().getCurrentSessionUser().getAvailableServicesForCategoryId(category.id).size()>1 || category.id.equals("20")){

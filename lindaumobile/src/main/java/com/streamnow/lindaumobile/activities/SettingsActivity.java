@@ -60,7 +60,7 @@ public class SettingsActivity extends BaseActivity {
         dateFormatLocal.setTimeZone(TimeZone.getDefault());
         String time = dateFormatLocal.format(new Date());
         textVersion.setTextColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.fontColorSmartphone);
-        textVersion.setText(getString(R.string.app_name) + " " + pInfo.versionName + " - " + time);
+        textVersion.setText(getString(R.string.app_name) + " " + pInfo.versionName + " - " + getString(R.string.versionDate));
         if(getIntent().getBooleanExtra("main_menu",true)){
             this.items = new ArrayList<>();
             String [] list = {getResources().getString(R.string.profile),getResources().getString(R.string.contacts),getResources().getString(R.string.logout),getResources().getString(R.string.shopping)};

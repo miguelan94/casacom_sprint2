@@ -35,6 +35,7 @@ public class DMDocument extends DMElement implements IMenuPrintable
             if(!o.isNull("last_update")) this.lastUpdate = o.getString("last_update");
             if(!o.isNull("issuer")) this.issuer = o.getString("issuer");
             if(!o.isNull("link")) this.link = o.getString("link");
+            System.out.println("ID document: " + id);
         }
         catch(JSONException e)
         {

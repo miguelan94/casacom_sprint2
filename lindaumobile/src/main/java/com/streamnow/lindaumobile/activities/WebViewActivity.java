@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -43,16 +45,17 @@ public class WebViewActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        String apiUrlString = getIntent().getStringExtra("api_url");
+        setContentView(R.layout.activity_web_view);
+        System.out.println("onCreate");
+        String webUrlString = getIntent().getStringExtra("web_url");
         String serviceId = getIntent().getStringExtra("service_id");
 
-        if( apiUrlString == null || apiUrlString.equals("") )
+        if( webUrlString == null || webUrlString.equals("") )
         {
             finish();
         }
 
-        setContentView(R.layout.activity_web_view);
+
 
         LinearLayout bgnd = (LinearLayout)findViewById(R.id.bar_bgnd);
         ImageView imageView = (ImageView) findViewById(R.id.bgnd_image);
@@ -112,7 +115,7 @@ public class WebViewActivity extends BaseActivity
         this.webView.getSettings().setLoadWithOverviewMode(true);
         this.webView.getSettings().setDomStorageEnabled(true);
         //this.webView.getSettings().setUserAgentString("Mozilla/5.0 (Linux; Android "+version+"; "+model+" Build/"+ID+") AppleWebKit/537.36 (KHTML, like Gecko) Chrome/"+packageInfo.versionName+" Mobile Safari/537.36");
-        if(apiUrlString.contains("youtube"))
+        if(webUrlString.contains("youtube"))
         {
             this.webView.getSettings().setUseWideViewPort(true);
             this.webView.getSettings().setLoadWithOverviewMode(true);
@@ -126,7 +129,9 @@ public class WebViewActivity extends BaseActivity
 
         // final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 
+
         progressDialog = ProgressDialog.show(this, getString(R.string.app_name), getString(R.string.please_wait), true);
+
         webView.setWebViewClient(new WebViewClient()
         {
             @Override
@@ -150,6 +155,7 @@ public class WebViewActivity extends BaseActivity
 
 
         });
+
         if(getIntent().getStringExtra("token")!=null && (serviceId.equals("29") || serviceId.equals("57") || serviceId.equals("59") || serviceId.equals("60") || serviceId.equals("27"))){
            /* String token = getIntent().getStringExtra("token");
             String version = android.os.Build.VERSION.RELEASE;
@@ -162,14 +168,13 @@ public class WebViewActivity extends BaseActivity
                 e.printStackTrace();
             }
             */
-            webView.loadUrl(apiUrlString+"token="+token);
 
-            //webView.loadUrl("file:///android_asset/fullscreen.html");
+            webView.loadUrl(webUrlString+"token="+token);
+
 
 
         }else{
-
-            webView.loadUrl(apiUrlString);
+            webView.loadUrl(webUrlString);
         }
 
     }
@@ -190,6 +195,20 @@ public class WebViewActivity extends BaseActivity
 
     }
     return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        webView.saveState(outState);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        webView.restoreState(savedInstanceState);
     }
 
 

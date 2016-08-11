@@ -76,6 +76,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
     private Switch switch_logged;
     private int colorBP;
     private  KeyStore keyStore;
+    private String BP;
 
 
 
@@ -380,7 +381,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
     }
 
 
-
     private void continueLogin()
     {
         final String username, password;
@@ -425,11 +425,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                 {
                     Lindau.getInstance().setCurrentSessionUser(sessionUser);
                     Locale locale = new Locale(sessionUser.userInfo.language);
-                    //Locale.setDefault(locale);
+                   // Locale.setDefault(locale);
+                    System.out.println("locale: " + locale.getLanguage() + " " + locale.getDisplayLanguage());
                     Configuration config = new Configuration();
                     config.locale = locale;
                     getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
+                    System.out.println("USer language: " + sessionUser.userInfo.language);
                     if(switch_logged.isChecked()){
                         prefEditor.putString("valid_until",sessionUser.validUntil);
                         prefEditor.putString("session_user", response.toString());
@@ -450,6 +452,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
                     progressDialog.dismiss();
                     Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                    //intent.putExtra("BP",getIntent().getStringExtra("BP"));
                     startActivity(intent);
                     finish();
 
@@ -624,6 +627,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
     }
 
 }
+
 
 /*
 Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

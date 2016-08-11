@@ -41,7 +41,7 @@
     <string name="no_mail_reset">Geben Sie Ihre Email oder Ihren Benutzernamen ein.</string>
     <string name="password_reseted">Wir haben Ihnen einen Link zum zürucksetzen des Passwortes an Ihre Emailadresse geschickt.</string>
     <string name="reset_error_title">Fehler</string>
-    <string name="reset_error_content">The given information is not right</string>
+    <string name="reset_error_content">Die Information ist nicht richtig.</string>
     <string name="tittle_password_reset">Email gesendet</string>
     <string name="no_entertainment_avaliable">Diese Funktionalität funktioniert nicht auf Android 5.x</string>
     <string name="select_BP">wählen</string>

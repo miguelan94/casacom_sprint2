@@ -20,6 +20,7 @@ import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsServiceConnection;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -68,8 +69,7 @@ public class MenuActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        Intent i = new Intent(this, RegistrationIntentService.class);
-        startService(i);
+
 
 
         PersistentCookieStore myCookieStore = new PersistentCookieStore(this);
@@ -190,13 +190,16 @@ public class MenuActivity extends BaseActivity
             if (service.type.equals("2"))
             {
                 final Intent intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra("api_url", service.apiUrl);
+                intent.putExtra("web_url", service.webviewUrl);
                 intent.putExtra("service_id", service.id);
                 if(categoryId.equals("5")){
                     RequestParams requestParams = new RequestParams();
-                    requestParams.add("appId","5033d287e70e42f0a5a9f44001cb2d");
+                   // requestParams.add("appId","5033d287e70e42f0a5a9f44001cb2d");
+
+                    requestParams.add("appId",service.secretId);
                     requestParams.add("userId",getIntent().getStringExtra("user_vodka"));
                     requestParams.add("password",getIntent().getStringExtra("pass_vodka"));
+                    //System.out.println("UServodka: " + getIntent().getStringExtra("user_vodka") + " pass: " + getIntent().getStringExtra("pass_vodka"));
                     AsyncHttpClient httpClient = new AsyncHttpClient();
                     String version = android.os.Build.VERSION.RELEASE;
                     String  ID =   android.os.Build.ID;
@@ -219,11 +222,13 @@ public class MenuActivity extends BaseActivity
                     httpClient.setUserAgent("Mozilla/5.0 (Linux; Android "+version+"; "+model+" Build/"+ID+"; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/"+packageInfo.versionName+" Mobile Safari/537.36");
                     httpClient.setEnableRedirects(true);
                     httpClient.setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
-                    httpClient.post("https://project-test.streamnow.ch/external/client/core/Login.do?",requestParams,new JsonHttpResponseHandler(){
+                    //https://project-test.streamnow.ch/external/client/core/Login.do?
+                    httpClient.post(service.apiUrl,requestParams,new JsonHttpResponseHandler(){
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response)
                         {
                             try {
+                                System.out.println("response: : "  + response.toString());
                                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 
 
@@ -284,7 +289,7 @@ public class MenuActivity extends BaseActivity
 */
 
 
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(service.apiUrl+"token="+response.getString("token")));
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(service.webviewUrl+"token="+response.getString("token")));
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.setPackage("com.android.chrome");
                                     try {
@@ -294,6 +299,7 @@ public class MenuActivity extends BaseActivity
                                         intent.setPackage(null);
                                         startActivity(intent);
                                     }
+
 
 
                                    // intent.putExtra("token",response.getString("token") );
@@ -334,7 +340,7 @@ public class MenuActivity extends BaseActivity
             {
                 // TODO Open youtube video here
                 Intent intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra("api_url", "https://m.youtube.com/watch?v=" + service.apiUrl);
+                intent.putExtra("web_url", "https://m.youtube.com/watch?v=" + service.webviewUrl);
                 startActivity(intent);
             }
             else if(service.type.equals("1")){
@@ -356,6 +362,14 @@ public class MenuActivity extends BaseActivity
                     intent.putExtra("root_menu", true);
                     intent.putExtras( new Bundle());
                     startActivity(intent);
+                }
+            }
+            else if(service.type.equals("8")){
+                Intent intent = getPackageManager().getLaunchIntentForPackage(service.webviewUrl);
+                if(intent!=null){
+                    startActivity(intent);
+                }else{
+
                 }
             }
         }
@@ -390,15 +404,24 @@ public class MenuActivity extends BaseActivity
                 else if (service.type.equals("2"))
                 {
                     Intent intent = new Intent(this, WebViewActivity.class);
-                    intent.putExtra("api_url", service.apiUrl);
+                    System.out.println("webview: " + service.webviewUrl);
+                    intent.putExtra("web_url", service.webviewUrl);
                     startActivity(intent);
                 }
                 else if (service.type.equals("3"))
                 {
                     // TODO Open youtube video here
                     Intent intent = new Intent(this, WebViewActivity.class);
-                    intent.putExtra("api_url", "https://m.youtube.com/watch?v=" + service.apiUrl);
+                    intent.putExtra("web_url", "https://m.youtube.com/watch?v=" + service.webviewUrl);
                     startActivity(intent);
+                }
+                else if(service.type.equals("8")){
+                    Intent intent = getPackageManager().getLaunchIntentForPackage(service.webviewUrl);
+                    if(intent!=null){
+                        startActivity(intent);
+                    }else{
+
+                    }
                 }
             }
             else if (services.size() > 1)
@@ -469,10 +492,17 @@ public class MenuActivity extends BaseActivity
                 })
                 .show();
     }
+/*
     @Override
-    public void onBackPressed() {
-        //moveTaskToBack(true);
-        finish();
+    public boolean onKeyDown(int keyCode, KeyEvent event){
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    finish();
+                    return true;
+            }
 
-    }
+        }
+        return super.onKeyDown(keyCode, event);
+    }*/
 }

@@ -147,6 +147,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     public void onClick(View v) {
         Intent intent = new Intent(this,LoginActivity.class);
         if(v.getTag().equals("Limmat")){
+            Lindau.getInstance().BP = "Limmat";
             intent.putExtra("BP","Limmat");
             intent.putExtra("ColorBP","rgba(215,10,23,1)");
             startActivity(intent);
@@ -154,31 +155,38 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         else if(v.getTag().equals("Lindau")){
             //Intent i = new Intent(this, LoginActivity.class);
             //intent.putExtra("BP","Lindau");
+           // intent.putExtra("BP","Lindau");
+            Lindau.getInstance().BP = "Lindau";
             intent.putExtra("ColorBP","rgba(44,159,20,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("Lindau2")){
             intent.putExtra("BP","Lindau2");
+            Lindau.getInstance().BP = "Lindau2";
             intent.putExtra("ColorBP","rgba(44,159,20,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("SBB")){
             intent.putExtra("BP","SBB");
+            Lindau.getInstance().BP = "SBB";
             intent.putExtra("ColorBP","rgba(197,1,44,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("Mia")){
             intent.putExtra("BP","Mia");
+            Lindau.getInstance().BP = "Mia";
             intent.putExtra("ColorBP","rgba(197,1,44,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("SNLiving")){
             intent.putExtra("BP","SNLiving");
+            Lindau.getInstance().BP = "SNLiving";
             intent.putExtra("ColorBP","rgba(0,0,0,1)");
             startActivity(intent);
         }
         else if(v.getTag().equals("CS")){
             intent.putExtra("BP","CS");
+            Lindau.getInstance().BP = "CS";
             intent.putExtra("ColorBP","rgba(0,50,83,1)");
             startActivity(intent);
         }

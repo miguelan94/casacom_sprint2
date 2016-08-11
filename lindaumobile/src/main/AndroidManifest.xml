@@ -31,7 +31,8 @@
         <activity
             android:name=".activities.WebViewActivity"
             android:label="@string/title_activity_web_view"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".activities.ContactActivity"
             android:label="@string/title_activity_contact"

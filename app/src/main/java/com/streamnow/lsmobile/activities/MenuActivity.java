@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ import cz.msebera.android.httpclient.Header;
 public class MenuActivity extends BaseActivity
 {
     protected final LDSessionUser sessionUser = Lindau.getInstance().getCurrentSessionUser();
+
     String categoryId;
 
     @Override
@@ -154,15 +156,16 @@ public class MenuActivity extends BaseActivity
         {
             services = sessionUser.getAvailableServicesForCategoryId(categoryId);
             final LDService service = (LDService) services.get(position);
-            System.out.println("service with category " + service.categoryId + " clicked");
+            System.out.println("service" + service.name + " id" + service.id + " , category " + service.categoryId);
+            System.out.println("size: " + sessionUser.availableServices.size());
             if (service.type.equals("2"))
             {
                 final Intent intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra("api_url", service.apiUrl);
+                intent.putExtra("web_url", service.webviewUrl);
                 intent.putExtra("service_id", service.id);
                 if(categoryId.equals("5")){
                     RequestParams requestParams = new RequestParams();
-                    requestParams.add("appId","5033d287e70e42f0a5a9f44001cb2d");
+                    requestParams.add("appId",service.secretId);
                     requestParams.add("userId",getIntent().getStringExtra("user_vodka"));
                     requestParams.add("password",getIntent().getStringExtra("pass_vodka"));
                     AsyncHttpClient httpClient = new AsyncHttpClient();
@@ -182,13 +185,13 @@ public class MenuActivity extends BaseActivity
                     */
 
                     httpClient.setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
-                    httpClient.post("https://project-test.streamnow.ch/external/client/core/Login.do?",requestParams,new JsonHttpResponseHandler(){
+                    httpClient.post(service.apiUrl,requestParams,new JsonHttpResponseHandler(){
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response)
                         {
                             try{
                                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(service.apiUrl+"token="+response.getString("token")));
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(service.webviewUrl+"token="+response.getString("token")));
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.setPackage("com.android.chrome");
                                     try {
@@ -233,7 +236,7 @@ public class MenuActivity extends BaseActivity
             {
                 // TODO Open youtube video here
                 Intent intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra("api_url", "https://m.youtube.com/watch?v=" + service.apiUrl);
+                intent.putExtra("web_url", "https://m.youtube.com/watch?v=" + service.webviewUrl);
                 startActivity(intent);
             }
             else if(service.type.equals("1")){
@@ -256,6 +259,14 @@ public class MenuActivity extends BaseActivity
                     startActivity(intent);
                 }
             }
+            else if(service.type.equals("8")){
+                Intent intent = getPackageManager().getLaunchIntentForPackage(service.webviewUrl);
+                if(intent!=null){
+                    startActivity(intent);
+                }else{
+
+                }
+            }
         }
         else
         {
@@ -267,7 +278,6 @@ public class MenuActivity extends BaseActivity
             {
 
                 LDService service = (LDService) services.get(0);
-                System.out.println("No submenu, id category: " + service.categoryId + " name: " + service.name + " icon: " + service.smartImage + " URL: " + service.apiUrl + " doc: " +service.docUrl + " admin: " + service.adminUrl);
                     //check service type
                 if (service.type.equals("1"))
                 {
@@ -288,15 +298,24 @@ public class MenuActivity extends BaseActivity
                 else if (service.type.equals("2"))
                 {
                     Intent intent = new Intent(this, WebViewActivity.class);
-                    intent.putExtra("api_url", service.apiUrl);
+                    intent.putExtra("web_url", service.webviewUrl);
                     startActivity(intent);
                 }
                 else if (service.type.equals("3"))
                 {
                     // TODO Open youtube video here
                     Intent intent = new Intent(this, WebViewActivity.class);
-                    intent.putExtra("api_url", "https://m.youtube.com/watch?v=" + service.apiUrl);
+                    intent.putExtra("web_url", "https://m.youtube.com/watch?v=" + service.webviewUrl);
                     startActivity(intent);
+                }
+                else if(service.type.equals("8")){
+
+                    Intent intent = getPackageManager().getLaunchIntentForPackage(service.webviewUrl);
+                    if(intent!=null){
+                        startActivity(intent);
+                    }else{
+
+                    }
                 }
             }
             else if (services.size() > 1)

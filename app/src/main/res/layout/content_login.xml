@@ -32,7 +32,8 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -63,7 +64,9 @@
                 android:hint="@string/username_hint"
                 android:background="@android:color/transparent"
                 android:textCursorDrawable="@drawable/cursor_color"
-                android:layout_weight="6"/>
+                android:layout_weight="6"
+                android:singleLine="true"
+                android:imeOptions="actionNext" />
 
         </LinearLayout>
         <LinearLayout
@@ -86,7 +89,8 @@
                 android:password="true"
                 android:background="@android:color/transparent"
                 android:textCursorDrawable="@drawable/cursor_color"
-                android:layout_weight="6"/>
+                android:layout_weight="6"
+                android:singleLine="true" />
         </LinearLayout>
 
         <LinearLayout

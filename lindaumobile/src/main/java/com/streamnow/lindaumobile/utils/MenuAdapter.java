@@ -18,6 +18,7 @@ import com.streamnow.lindaumobile.R;
 import com.streamnow.lindaumobile.datamodel.DMCategory;
 import com.streamnow.lindaumobile.datamodel.DMDocument;
 import com.streamnow.lindaumobile.datamodel.LDCategory;
+import com.streamnow.lindaumobile.datamodel.LDService;
 import com.streamnow.lindaumobile.interfaces.IMenuPrintable;
 import com.squareup.picasso.Picasso;
 
@@ -96,6 +97,15 @@ public class MenuAdapter extends BaseAdapter
         createBitMap(bgnd_circle);
 
 
+        if(items.get(position) instanceof LDService){
+            LDService service = (LDService) items.get(position);
+            if(service.id.equals("3")){
+                imageArrow.setVisibility(View.VISIBLE);
+            }
+            else{
+                imageArrow.setVisibility(View.INVISIBLE);
+            }
+        }
         if(items.get(position) instanceof  LDCategory){
             LDCategory category = (LDCategory)items.get(position);
             if(Lindau.getInstance().getCurrentSessionUser().getAvailableServicesForCategoryId(category.id).size()>1 || category.id.equals("20")){

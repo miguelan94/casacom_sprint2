@@ -394,6 +394,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                     }
 
                     progressDialog.dismiss();
+                    Intent i = new Intent(LoginActivity.this, RegistrationIntentService.class);
+                    startService(i);
                     Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                     startActivity(intent);
                     finish();
@@ -449,7 +451,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                     public void onClick(DialogInterface dialog, int which) {
 
 
-                        if(inputEmail!=null && !inputEmail.getText().toString().equals("")){
+                        //if(inputEmail!=null && !inputEmail.getText().toString().equals("")){
                             String email = inputEmail.getText().toString();
                             RequestParams requestParams = new RequestParams("email", email);
                             LDConnection.post("auth/reset", requestParams, new JsonHttpResponseHandler()
@@ -479,15 +481,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
                                 @Override
                                 public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable) {
-                                    System.out.println("onFailure throwable: " + throwable.toString() + " status code = " + statusCode);
+                                    System.out.println("onFailure throwable: " + throwable.toString() + " status code = " + statusCode + " response: " + response.toString());
 
                                 }
 
                                 @Override
                                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                    System.out.println(" onFailure json");
+                                    System.out.println(" onFailure json: " + errorResponse.toString() + " status code = " + statusCode);
                                     try {
-                                        if(errorResponse != null && statusCode == 403 && errorResponse.getString("msg").equals("KO")){
+                                        if(statusCode == 403 && errorResponse.getString("msg").equals("KO")){
                                             new AlertDialog.Builder(LoginActivity.this)
                                                     .setTitle(getString(R.string.reset_error_title))
                                                     .setMessage(getString(R.string.reset_error_content))
@@ -503,7 +505,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
                                 }
                             });
-                        }
+                        //}
                     }
                 })
                 .setIcon(R.mipmap.ic_launcher)

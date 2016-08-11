@@ -63,7 +63,9 @@
                 android:hint="@string/username_hint"
                 android:background="@android:color/transparent"
                 android:textCursorDrawable="@drawable/cursor_color"
-                android:layout_weight="6"/>
+                android:layout_weight="6"
+                android:imeOptions="actionNext"
+                android:singleLine="true" />
 
         </LinearLayout>
         <LinearLayout
@@ -86,7 +88,8 @@
                 android:password="true"
                 android:background="@android:color/transparent"
                 android:textCursorDrawable="@drawable/cursor_color"
-                android:layout_weight="6"/>
+                android:layout_weight="6"
+                android:singleLine="true" />
         </LinearLayout>
 
         <LinearLayout

@@ -37,10 +37,10 @@ public class WebViewActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
 
-        String apiUrlString = getIntent().getStringExtra("api_url");
+        String webUrlString = getIntent().getStringExtra("web_url");
         String serviceId = getIntent().getStringExtra("service_id");
 
-        if( apiUrlString == null || apiUrlString.equals("") )
+        if( webUrlString == null || webUrlString.equals("") )
         {
             finish();
         }
@@ -95,7 +95,7 @@ public class WebViewActivity extends BaseActivity
         this.webView.getSettings().setLoadWithOverviewMode(true);
         this.webView.getSettings().setDomStorageEnabled(true);
 
-        if(apiUrlString.contains("youtube"))
+        if(webUrlString.contains("youtube"))
         {
             this.webView.getSettings().setUseWideViewPort(true);
             this.webView.getSettings().setLoadWithOverviewMode(true);
@@ -135,9 +135,9 @@ public class WebViewActivity extends BaseActivity
         });
         if(getIntent().getStringExtra("token")!=null && (serviceId.equals("29") || serviceId.equals("57") || serviceId.equals("59") || serviceId.equals("60") || serviceId.equals("27"))){
             String token = getIntent().getStringExtra("token");
-            webView.loadUrl(apiUrlString+"token="+token);
+            webView.loadUrl(webUrlString+"token="+token);
         }else{
-            webView.loadUrl(apiUrlString);
+            webView.loadUrl(webUrlString);
         }
 
     }
@@ -159,6 +159,22 @@ public class WebViewActivity extends BaseActivity
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        webView.saveState(outState);
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        webView.restoreState(savedInstanceState);
+    }
+
     /*@Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK) && webView!=null && webView.canGoBack() && getIntent().getStringExtra("token")!=null ) {

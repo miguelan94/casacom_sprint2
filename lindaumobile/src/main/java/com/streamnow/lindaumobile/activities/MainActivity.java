@@ -51,11 +51,11 @@ public class MainActivity extends BaseActivity{
     private String[] arrayString = null;
     private SharedPreferences preferences;
     private  KeyStore keyStore;
+    public boolean tokenRefresh = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Intent intent = new Intent(this, RegistrationIntentService.class);
-        //startService(intent);
+
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if(preferences.getBoolean("keepSession",false) && !preferences.getString("AppId","").equalsIgnoreCase("")){
@@ -148,6 +148,7 @@ public class MainActivity extends BaseActivity{
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response)
                 {
+                    tokenRefresh = true;
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                     SharedPreferences.Editor prefEditor = sharedPref.edit();
 
@@ -156,9 +157,7 @@ public class MainActivity extends BaseActivity{
                         prefEditor.putString("access_token",response.getString("access_token"));
                         prefEditor.putString("refresh_token",response.getString("refresh_token"));
                         prefEditor.apply();
-
                         JSONObject json = new JSONObject(preferences.getString("session_user",""));
-
                         json.put("access_token",response.getString("access_token"));
                         json.put("refresh_token",response.getString("refresh_token"));
                         json.put("validUntil",response.getString("validUntil"));
@@ -240,6 +239,8 @@ public class MainActivity extends BaseActivity{
                         prefEditor.putString("user",username);
                         prefEditor.putString("pass",cipherPass);
                         prefEditor.apply();
+                        Intent i = new Intent(MainActivity.this, RegistrationIntentService.class);
+                        startService(i);
                         Intent intent = new Intent(MainActivity.this, MenuActivity.class);
                         startActivity(intent);
                         finish();
@@ -286,6 +287,10 @@ public class MainActivity extends BaseActivity{
                 config.locale = locale;
                 getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
+                if(tokenRefresh==true){
+                    Intent i = new Intent(MainActivity.this, RegistrationIntentService.class);
+                    startService(i);
+                }
                 Intent intent = new Intent(this, MenuActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

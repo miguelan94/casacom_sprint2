@@ -38,6 +38,7 @@ public class LDService implements IMenuPrintable
     public int categoryId;
     public String deviceType;
     public String description;
+    public String webviewUrl;
 
     public LDService(JSONObject o)
     {
@@ -68,6 +69,7 @@ public class LDService implements IMenuPrintable
             if(!o.isNull("category_id")) this.categoryId = o.getInt("category_id");
             if(!o.isNull("device_type")) this.deviceType = o.getString("device_type");
             if(!o.isNull("description")) this.description = o.getString("description");
+            if(!o.isNull("webview_url")) this.webviewUrl = o.getString("webview_url");
 
 
         }

@@ -21,6 +21,7 @@ public class Lindau extends Application
     //public String appId = "com.streamnow.lsmobile";
     public String appId = "com.streamnow.lindaumobile";
     public String appDemoAccount = "demo.lindau";
+    public String BP = "Lindau";
     private LDSessionUser currentSessionUser;
     private ArrayList<IMenuPrintable> userTree;
     private ArrayList<IMenuPrintable> repoTree;
@@ -152,4 +153,6 @@ public class Lindau extends Application
         super.onCreate();
         sharedInstance = this;
     }
+
+
 }
