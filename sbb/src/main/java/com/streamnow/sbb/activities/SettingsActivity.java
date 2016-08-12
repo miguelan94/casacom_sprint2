@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import cz.msebera.android.httpclient.Header;
@@ -45,8 +47,12 @@ public class SettingsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config,getResources().getDisplayMetrics());
         setContentView(R.layout.activity_settings);
-
         RelativeLayout settings_menu = (RelativeLayout)findViewById(R.id.settings_menu_background);
         settings_menu.setBackgroundColor(sessionUser.userInfo.partner.backgroundColorSmartphone);
         TextView textVersion = (TextView)findViewById(R.id.text_version);
@@ -63,7 +69,8 @@ public class SettingsActivity extends BaseActivity {
             String [] list = {getResources().getString(R.string.profile),getResources().getString(R.string.contacts),getResources().getString(R.string.logout),getResources().getString(R.string.shopping)};
             //items.addAll(Arrays.asList(list)); //all
             items.add(0,list[0]);
-            items.add(1,list[2]);
+            items.add(1,list[3]);
+            items.add(2,list[2]);
         }
         View dividerTop = findViewById(R.id.divider);
         View dividerBottom = findViewById(R.id.dividerBottom);
@@ -114,10 +121,11 @@ public class SettingsActivity extends BaseActivity {
         if(position==0){ //profile clicked
             Intent i = new Intent(this,ProfileActivity.class);
             startActivity(i);
-            finish();
+        }else if(position==1){//shopping
+            Intent i = new Intent(this,ShoppingActivity.class);
+            startActivity(i);
 
-        }else if(position==1){//logout
-
+        }else if(position==2){//logout
             RequestParams requestParams = new RequestParams();
 
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
@@ -167,15 +175,10 @@ public class SettingsActivity extends BaseActivity {
 
                 }
             });
-
-        }else if(position==2){//contacts
-
+        }else if(position==3){//contacts
             Intent intent= new Intent(Intent.ACTION_PICK,  ContactsContract.Contacts.CONTENT_URI);
             intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
             startActivityForResult(intent,PICK_CONTACT_REQUEST);
-        }else if(position==3){//shopping
-            //Intent i = new Intent(this,MainActivity.class);
-            //startActivity(i);
 
         }
     }

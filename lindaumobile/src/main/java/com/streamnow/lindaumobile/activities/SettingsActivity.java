@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import cz.msebera.android.httpclient.Header;
@@ -45,8 +47,12 @@ public class SettingsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config,getResources().getDisplayMetrics());
         setContentView(R.layout.activity_settings);
-
         RelativeLayout settings_menu = (RelativeLayout)findViewById(R.id.settings_menu_background);
         settings_menu.setBackgroundColor(sessionUser.userInfo.partner.backgroundColorSmartphone);
         TextView textVersion = (TextView)findViewById(R.id.text_version);
@@ -117,7 +123,6 @@ public class SettingsActivity extends BaseActivity {
         if(position==0){ //profile clicked
             Intent i = new Intent(this,ProfileActivity.class);
             startActivity(i);
-            finish();
 
         }else if(position==1){//logout
 

@@ -1,6 +1,7 @@
 package com.streamnow.lsmobile.activities;
 
 import android.app.ProgressDialog;
+import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,8 @@ import android.widget.LinearLayout;
 import com.streamnow.lsmobile.R;
 import com.streamnow.lsmobile.utils.Lindau;
 
+import java.util.Locale;
+
 
 /** !
  * Created by Miguel Estévez on 31/1/16.
@@ -36,6 +39,11 @@ public class WebViewActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
         String webUrlString = getIntent().getStringExtra("web_url");
         String serviceId = getIntent().getStringExtra("service_id");

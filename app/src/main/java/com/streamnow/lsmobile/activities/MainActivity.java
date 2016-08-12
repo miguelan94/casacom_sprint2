@@ -77,7 +77,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
 
                 Lindau.getInstance().appId = preferences.getString("AppId","");
+                Lindau.getInstance().BP = preferences.getString("BP","");
                 System.out.println("AppId----------->"+Lindau.getInstance().appId);
+                System.out.println("BP main: " + Lindau.getInstance().BP);
                 if(!LDConnection.isSetCurrentUrl()){
                     getURL();
                 }
@@ -88,12 +90,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
         else {
 
-        setContentView(R.layout.activity_main);
-        Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
+            setContentView(R.layout.activity_main);
+            Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
+            Configuration config = new Configuration();
+            config.locale = locale;
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+
+
+       /* Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
         Configuration config = new Configuration();
         config.locale = locale;
         getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
+*/
 
         NumberPicker numberPicker = (NumberPicker) findViewById(R.id.numberPicker);
             final TextView textView_BP = (TextView) findViewById(R.id.textView_BP);
@@ -298,7 +306,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         }else if(difference<=0){
             //login
-
             System.out.println("login");
             final String username = preferences.getString("user","");
             String cipherPassword = preferences.getString("pass","");
@@ -330,12 +337,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     if( sessionUser != null && sessionUser.accessToken != null )
                     {
                         Lindau.getInstance().setCurrentSessionUser(sessionUser);
-                        Locale locale = new Locale(sessionUser.userInfo.language);
-                        //Locale.setDefault(locale);
-                        Configuration config = new Configuration();
-                        config.locale = locale;
-                        getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
                         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                         prefEditor.putString("valid_until",sessionUser.validUntil);
@@ -390,12 +391,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             if( LDsessionUser != null && LDsessionUser.accessToken != null )
             {
                 Lindau.getInstance().setCurrentSessionUser(LDsessionUser);
-                Locale locale = new Locale(LDsessionUser.userInfo.language);
-                //Locale.setDefault(locale);
-                Configuration config = new Configuration();
-                config.locale = locale;
-                getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
                 Intent intent = new Intent(this, MenuActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

@@ -28,6 +28,8 @@ import android.widget.LinearLayout;
 import com.streamnow.lindaumobile.R;
 import com.streamnow.lindaumobile.utils.Lindau;
 
+import java.util.Locale;
+
 
 /** !
  * Created by Miguel Estévez on 31/1/16.
@@ -45,8 +47,12 @@ public class WebViewActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config,getResources().getDisplayMetrics());
         setContentView(R.layout.activity_web_view);
-        System.out.println("onCreate");
         String webUrlString = getIntent().getStringExtra("web_url");
         String serviceId = getIntent().getStringExtra("service_id");
 
@@ -54,8 +60,6 @@ public class WebViewActivity extends BaseActivity
         {
             finish();
         }
-
-
 
         LinearLayout bgnd = (LinearLayout)findViewById(R.id.bar_bgnd);
         ImageView imageView = (ImageView) findViewById(R.id.bgnd_image);

@@ -84,19 +84,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
         Configuration config = new Configuration();
         config.locale = locale;
-        getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
-        setContentView(R.layout.activity_login);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            setContentView(R.layout.activity_login_land);
+        }
+        else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            setContentView(R.layout.activity_login);
+        }
 
+        init();
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void init(){
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
@@ -187,8 +196,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                 return false;
             }
         });
-
-
     }
 
     @Override
@@ -232,6 +239,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         if((int)v.getTag() == RESET_BUTTON_TAG){
             resetButtonClicked(v);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            //setContentView(R.layout.activity_shopping);
+            setContentView(R.layout.activity_login_land);
+            init();
+        }else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            setContentView(R.layout.activity_login);
+            init();
+        }
+
     }
 
     public void loginButtonClicked(View sender)
@@ -369,12 +394,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                 {
                     System.out.println("token: " + sessionUser.accessToken);
                     Lindau.getInstance().setCurrentSessionUser(sessionUser);
-                    Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
-                    //Locale.setDefault(locale);
-                    Configuration config = new Configuration();
-                    config.locale = locale;
-                    getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
                     if(switch_logged.isChecked()){
                         prefEditor.putString("valid_until",sessionUser.validUntil);
                         prefEditor.putString("session_user", response.toString());

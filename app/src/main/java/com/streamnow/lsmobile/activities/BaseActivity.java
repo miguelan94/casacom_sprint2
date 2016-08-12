@@ -1,5 +1,6 @@
 package com.streamnow.lsmobile.activities;
 
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.view.WindowManager;
 
 import com.streamnow.lsmobile.R;
 import com.streamnow.lsmobile.utils.Lindau;
+
+import java.util.Locale;
 
 /** !
  * Created by Miguel Estévez on 15/2/16.
@@ -21,7 +24,6 @@ public class BaseActivity extends AppCompatActivity
         super.onCreate(savedInstance);
         if (Build.VERSION.SDK_INT >= 21)
         {
-            System.out.println("Base activity");
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -38,5 +40,6 @@ public class BaseActivity extends AppCompatActivity
         else
         {
         }
+
     }
 }

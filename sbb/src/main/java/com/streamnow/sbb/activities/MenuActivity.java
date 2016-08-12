@@ -66,6 +66,12 @@ public class MenuActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config,getResources().getDisplayMetrics());
+
         setContentView(R.layout.activity_main_menu);
 
         Intent i = new Intent(this, RegistrationIntentService.class);

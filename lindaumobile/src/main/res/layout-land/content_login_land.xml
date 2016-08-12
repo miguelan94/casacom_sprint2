@@ -5,34 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.streamnow.sbb.activities.LoginActivity"
-    tools:showIn="@layout/activity_login"
+    tools:context="com.streamnow.lindaumobile.activities.LoginActivity"
+    tools:showIn="@layout/activity_login_land"
     android:id="@+id/login_background">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:id="@+id/layout_main_logo"
+        android:gravity="center_vertical|center_horizontal"
         android:layout_weight="0.4"
-        android:id="@+id/layout_main_logo">
+        android:layout_marginTop="10dp">
 
         <ImageView
             android:id="@+id/main_logo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/main_logo"
-            android:layout_gravity="center"
-            android:layout_weight="1"
             android:adjustViewBounds="true"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp" />
+            android:layout_gravity="center"
+            android:layout_marginLeft="180dp"
+            android:layout_marginRight="180dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -40,7 +37,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_weight="0.4" >
+        android:layout_marginTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,7 +86,6 @@
                 android:background="@android:color/transparent"
                 android:textCursorDrawable="@drawable/cursor_color"
                 android:layout_weight="6"
-                android:imeOptions="actionNext"
                 android:singleLine="true" />
         </LinearLayout>
 
@@ -98,7 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center|right"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
 
             <Switch
                 android:layout_width="wrap_content"
@@ -113,14 +110,16 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:paddingBottom="10dp">
 
 
         <Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="20dp"
             android:text="@string/login_button_title1"
             android:textColor="#fff"
             android:textSize="16dp"
@@ -130,12 +129,11 @@
             android:id="@+id/resetButton"
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:layout_marginBottom="75dp"
             android:text="@string/reset_button_title"
             android:textColor="#fff"
             android:textSize="16dp"
             android:background="@drawable/login_button_states"
-            android:singleLine="false" />
+            />
     </LinearLayout>
 
 </LinearLayout>

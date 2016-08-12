@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
@@ -81,19 +83,29 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        /////lindaufiber---->login activity
-       // Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
-        //Configuration config = new Configuration();
-        //config.locale = locale;
-        //getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+        Locale locale = new Locale(Resources.getSystem().getConfiguration().locale.getLanguage());
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
-        setContentView(R.layout.activity_login);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            setContentView(R.layout.activity_login_land);
+        }
+        else if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            setContentView(R.layout.activity_login);
+        }
+
+        init();
+
+    }
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void init(){
 
         try {
             keyStore = KeyStore.getInstance("AndroidKeyStore");
@@ -104,8 +116,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         }
 
         // createNewKeys("test");
-       // String cipherText = encryptString("test","cipher");
-       //System.out.println(cipherText);
+        // String cipherText = encryptString("test","cipher");
+        //System.out.println(cipherText);
         //System.out.println("Descrypt: " + decryptString("test",cipherText));
 
 
@@ -134,7 +146,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
         //switch_logged.setButtonTintList(buttonStates);
         //switch_logged.getThumbDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
         //switch_logged.getTrackDrawable().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
-
 
         if(getIntent().getStringExtra("BP")!=null){
             if(getIntent().getStringExtra("BP").equals("Limmat")){
@@ -180,8 +191,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
 
             }
         }else{
-                Lindau.getInstance().appId ="com.streamnow.lindaumobile";
-                Lindau.getInstance().appDemoAccount = "demo.lindau";
+            Lindau.getInstance().appId ="com.streamnow.lindaumobile";
+            Lindau.getInstance().appDemoAccount = "demo.lindau";
 
         }
 
@@ -424,13 +435,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                 if( sessionUser != null && sessionUser.accessToken != null )
                 {
                     Lindau.getInstance().setCurrentSessionUser(sessionUser);
-                    Locale locale = new Locale(sessionUser.userInfo.language);
-                   // Locale.setDefault(locale);
-                    System.out.println("locale: " + locale.getLanguage() + " " + locale.getDisplayLanguage());
-                    Configuration config = new Configuration();
-                    config.locale = locale;
-                    getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
                     System.out.println("USer language: " + sessionUser.userInfo.language);
                     if(switch_logged.isChecked()){
                         prefEditor.putString("valid_until",sessionUser.validUntil);
@@ -439,7 +443,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                         prefEditor.putString("refresh_token",sessionUser.refreshToken);
                         prefEditor.putBoolean("keepSession",true);
                         prefEditor.putString("AppId",Lindau.getInstance().appId);
-
+                        prefEditor.putString("BP",Lindau.getInstance().BP);
                         createNewKeys("livingservices");
                         String cipherPass = encryptString("livingservices",password);
                         prefEditor.putString("user",username);
@@ -476,6 +480,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener
                 progressDialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            //setContentView(R.layout.activity_shopping);
+            setContentView(R.layout.activity_login_land);
+            init();
+        }else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            setContentView(R.layout.activity_login);
+            init();
+        }
+
     }
 
     private void showAlertDialog(String msg){

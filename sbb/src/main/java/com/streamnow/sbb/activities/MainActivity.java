@@ -220,12 +220,6 @@ public class MainActivity extends BaseActivity{
                     if( sessionUser != null && sessionUser.accessToken != null )
                     {
                         Lindau.getInstance().setCurrentSessionUser(sessionUser);
-                        Locale locale = new Locale(sessionUser.userInfo.language);
-                        //Locale.setDefault(locale);
-                        Configuration config = new Configuration();
-                        config.locale = locale;
-                        getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
                         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                         SharedPreferences.Editor prefEditor = sharedPref.edit();
                         prefEditor.putString("valid_until",sessionUser.validUntil);
@@ -280,12 +274,6 @@ public class MainActivity extends BaseActivity{
             if( LDsessionUser != null && LDsessionUser.accessToken != null )
             {
                 Lindau.getInstance().setCurrentSessionUser(LDsessionUser);
-                Locale locale = new Locale(LDsessionUser.userInfo.language);
-                //Locale.setDefault(locale);
-                Configuration config = new Configuration();
-                config.locale = locale;
-                getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
                 Intent intent = new Intent(this, MenuActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

@@ -1,4 +1,4 @@
-package com.streamnow.lsmobile.activities;
+package com.streamnow.sbb.activities;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -8,33 +8,25 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.squareup.picasso.Picasso;
-import com.streamnow.lsmobile.R;
-import com.streamnow.lsmobile.datamodel.LDService;
-import com.streamnow.lsmobile.datamodel.LDSessionUser;
-import com.streamnow.lsmobile.utils.Lindau;
+import com.streamnow.sbb.R;
+import com.streamnow.sbb.datamodel.LDService;
+import com.streamnow.sbb.datamodel.LDSessionUser;
+import com.streamnow.sbb.utils.Lindau;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -49,6 +41,11 @@ public class ShoppingActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping);
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
         init();
 
 
@@ -60,18 +57,17 @@ public class ShoppingActivity extends BaseActivity implements View.OnClickListen
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
             setContentView(R.layout.activity_shopping);
+            Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+            // Locale.setDefault(locale);
+            Configuration config = new Configuration();
+            config.locale = locale;
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
             init();
         }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private void init(){
-        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
-        // Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-
         RelativeLayout background = (RelativeLayout)findViewById(R.id.background_shopping);
         background.setBackgroundColor(sessionUser.userInfo.partner.backgroundColorSmartphone);
         TableLayout tableLayout = (TableLayout)findViewById(R.id.table);
@@ -122,7 +118,7 @@ public class ShoppingActivity extends BaseActivity implements View.OnClickListen
 
                 linearLayout = new LinearLayout(this);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics());
+                int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics());
                 int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics());
                 linearLayout.setLayoutParams(new TableRow.LayoutParams(width, height));
                 int paddingLayout = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
@@ -160,7 +156,7 @@ public class ShoppingActivity extends BaseActivity implements View.OnClickListen
                 frameLayout.addView(image);
                 linearLayout.addView(frameLayout);
                 row.addView(linearLayout);
-               // linearLayout.addView(image);
+                // linearLayout.addView(image);
 
             }
             tableLayout.addView(row);
@@ -202,3 +198,4 @@ public class ShoppingActivity extends BaseActivity implements View.OnClickListen
 
     }
 }
+

@@ -2,6 +2,7 @@ package com.streamnow.sbb.activities;
 
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
@@ -14,14 +15,20 @@ import com.streamnow.sbb.R;
 import com.streamnow.sbb.datamodel.LDSessionUser;
 import com.streamnow.sbb.utils.Lindau;
 
+import java.util.Locale;
+
 public class ProfileActivity extends BaseActivity {
 
     protected final LDSessionUser sessionUser = Lindau.getInstance().getCurrentSessionUser();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config,getResources().getDisplayMetrics());
         setContentView(R.layout.activity_profile);
-
         ImageView bgnd_image = (ImageView)findViewById(R.id.profile_bgnd_image);
         bgnd_image.setColorFilter(sessionUser.userInfo.partner.colorTop, PorterDuff.Mode.SRC_ATOP);
 
@@ -29,9 +36,7 @@ public class ProfileActivity extends BaseActivity {
         leftArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this,MenuActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                finish();
             }
         });
 

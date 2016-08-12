@@ -60,14 +60,18 @@ public class MenuActivity extends BaseActivity
 {
     protected final LDSessionUser sessionUser = Lindau.getInstance().getCurrentSessionUser();
     String categoryId;
-    CustomTabsClient mCustomTabsClient;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config,getResources().getDisplayMetrics());
         setContentView(R.layout.activity_main_menu);
+
 
 
 
@@ -90,17 +94,6 @@ public class MenuActivity extends BaseActivity
         {
             adapterArray = sessionUser.getAvailableServicesForCategoryId(categoryId);
         }
-
-
-        /*Locale locale = new Locale(sessionUser.userInfo.language);
-        //Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getApplicationContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-*/
-
-
-
 
 
         RelativeLayout mainBackground = (RelativeLayout) findViewById(R.id.main_menu_background);

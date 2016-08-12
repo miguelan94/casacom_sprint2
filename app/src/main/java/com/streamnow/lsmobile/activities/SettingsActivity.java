@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import cz.msebera.android.httpclient.Header;
@@ -46,6 +48,12 @@ public class SettingsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+
         RelativeLayout settings_menu = (RelativeLayout)findViewById(R.id.settings_menu_background);
         settings_menu.setBackgroundColor(sessionUser.userInfo.partner.backgroundColorSmartphone);
         TextView textVersion = (TextView)findViewById(R.id.text_version);
@@ -131,8 +139,9 @@ public class SettingsActivity extends BaseActivity {
             }
             else{
 
+                System.out.println("Logout");
                 RequestParams requestParams = new RequestParams();
-                //requestParams.add("access_token",sessionUser.accessToken);
+                requestParams.add("access_token",sessionUser.accessToken);
                 LDConnection.get("logout", requestParams, new JsonHttpResponseHandler()
                 {
                     @Override
@@ -143,12 +152,11 @@ public class SettingsActivity extends BaseActivity {
                                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
                                 SharedPreferences.Editor prefEditor = sharedPref.edit();
                                 prefEditor.putBoolean("keepSession",false);
+                                prefEditor.putString("access_token","");
                                 prefEditor.apply();
                                 Intent i = new Intent(SettingsActivity.this,MainActivity.class);
                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(i);
-
-
                             }
                         }
                         catch (JSONException e){
@@ -164,7 +172,7 @@ public class SettingsActivity extends BaseActivity {
                         prefEditor.putBoolean("keepSession",false);
                         prefEditor.putString("access_token","");
                         prefEditor.apply();
-                        Intent i = new Intent(SettingsActivity.this,LoginActivity.class);
+                        Intent i = new Intent(SettingsActivity.this,MainActivity.class);
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
                         finish();
@@ -181,10 +189,10 @@ public class SettingsActivity extends BaseActivity {
 
         }else if(position==2){//logout
 
-
+            System.out.println("Logout 2");
 
             RequestParams requestParams = new RequestParams();
-            //requestParams.add("access_token",sessionUser.accessToken);
+            requestParams.add("access_token",sessionUser.accessToken);
             LDConnection.get("logout", requestParams, new JsonHttpResponseHandler()
             {
                 @Override
@@ -195,6 +203,7 @@ public class SettingsActivity extends BaseActivity {
                             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
                             SharedPreferences.Editor prefEditor = sharedPref.edit();
                             prefEditor.putBoolean("keepSession",false);
+                            prefEditor.putString("access_token","");
                             prefEditor.apply();
                             Intent i = new Intent(SettingsActivity.this,MainActivity.class);
                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -216,7 +225,7 @@ public class SettingsActivity extends BaseActivity {
                     prefEditor.putBoolean("keepSession",false);
                     prefEditor.putString("access_token","");
                     prefEditor.apply();
-                    Intent i = new Intent(SettingsActivity.this,LoginActivity.class);
+                    Intent i = new Intent(SettingsActivity.this,MainActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
                     finish();

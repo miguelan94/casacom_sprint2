@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">20dp</dimen>
     <dimen name="fab_margin">30dp</dimen>
     <dimen name="login_box_height">32dp</dimen>
+    <dimen name="box_icons_width">57dp</dimen>
+    <dimen name="box_icons_height">62dp</dimen>
 </resources>

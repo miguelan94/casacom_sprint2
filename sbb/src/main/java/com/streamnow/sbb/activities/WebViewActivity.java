@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +27,8 @@ import android.widget.LinearLayout;
 import com.streamnow.sbb.R;
 import com.streamnow.sbb.utils.Lindau;
 
+import java.util.Locale;
+
 
 /** !
  * Created by Miguel Estévez on 31/1/16.
@@ -43,6 +46,12 @@ public class WebViewActivity extends BaseActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        Locale locale = new Locale(Lindau.getInstance().getCurrentSessionUser().userInfo.language);
+        // Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
         String webUrlString = getIntent().getStringExtra("web_url");
         String serviceId = getIntent().getStringExtra("service_id");

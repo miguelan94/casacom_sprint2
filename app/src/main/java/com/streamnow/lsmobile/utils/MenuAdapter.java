@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,15 +70,17 @@ public class MenuAdapter extends BaseAdapter
             convertView = ((Activity) context).getLayoutInflater().inflate(R.layout.main_menu_row, parent, false);
         }
         LinearLayout row_bgnd = (LinearLayout)convertView.findViewById(R.id.row_bgnd);
+        FrameLayout layout_bgnd = (FrameLayout)convertView.findViewById(R.id.layout_bgnd);
+
         row_bgnd.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.backgroundColorSmartphone);
         IMenuPrintable menuPrintable = items.get(position);
 
         ImageView imageArrow = (ImageView)convertView.findViewById(R.id.row_arrow);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.row_icon);
-
-
         ImageView bgnd_circle = (ImageView)convertView.findViewById(R.id.bgnd_circle);
-        FrameLayout layout_bgnd = (FrameLayout)convertView.findViewById(R.id.layout_bgnd);
+
+
+
 
         //imageView.setBackground();
         //imageView.setBackgroundColor(Lindau.getInstance().getCurrentSessionUser().userInfo.partner.backgroundColorIconSmartphone);
